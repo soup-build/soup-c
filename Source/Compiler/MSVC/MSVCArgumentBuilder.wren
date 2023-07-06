@@ -99,14 +99,10 @@ class MSVCArgumentBuilder {
 		}
 
 		// Set the language standard
-		if (arguments.Standard == LanguageStandard.CPP11) {
-			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++11")
-		} else if (arguments.Standard == LanguageStandard.CPP14) {
-			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++14")
-		} else if (arguments.Standard == LanguageStandard.CPP17) {
-			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++17")
-		} else if (arguments.Standard == LanguageStandard.CPP20) {
-			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++latest")
+		if (arguments.Standard == LanguageStandard.C11) {
+			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c11")
+		} else if (arguments.Standard == LanguageStandard.C17) {
+			MSVCArgumentBuilder.AddParameter(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c17")
 		} else {
 			Fiber.abort("Unknown language standard %(arguments.Standard).")
 		}
@@ -138,20 +134,11 @@ class MSVCArgumentBuilder {
 		// Enable basic runtime checks
 		MSVCArgumentBuilder.AddFlag(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentFlag_RuntimeChecks)
 
-		// Enable c++ exceptions
-		MSVCArgumentBuilder.AddFlag(commandArguments, "EHsc")
-
 		// Enable multithreaded runtime static linked
 		if (arguments.GenerateSourceDebugInfo) {
 			MSVCArgumentBuilder.AddFlag(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentFlag_Runtime_MultithreadedStatic_Debug)
 		} else {
 			MSVCArgumentBuilder.AddFlag(commandArguments, MSVCArgumentBuilder.Compiler_ArgumentFlag_Runtime_MultithreadedStatic_Release)
-		}
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			MSVCArgumentBuilder.AddFlag(commandArguments, "reference")
-			MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
 		}
 
 		// TODO: For now we allow exports to be large
@@ -201,104 +188,15 @@ class MSVCArgumentBuilder {
 		return commandArguments
 	}
 
-	static BuildInterfaceUnitCompilerArguments(
-		targetRootDirectory,
-		arguments,
-		responseFile) {
-		// Build the arguments for a standard translation unit
-		var commandArguments = []
-
-		// Add the response file
-		commandArguments.add("@" + responseFile.toString)
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			MSVCArgumentBuilder.AddFlag(commandArguments, "reference")
-			MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the source file as input
-		commandArguments.add(arguments.SourceFile.toString)
-
-		// Add the target file as outputs
-		var absoluteTargetFile = targetRootDirectory + arguments.TargetFile
-		MSVCArgumentBuilder.AddFlagValueWithQuotes(
-			commandArguments,
-			MSVCArgumentBuilder.Compiler_ArgumentParameter_ObjectFile,
-			absoluteTargetFile.toString)
-
-		// Add the unique arguments for an interface unit
-		MSVCArgumentBuilder.AddFlag(commandArguments, "interface")
-
-		// Specify the module interface file output
-		MSVCArgumentBuilder.AddFlag(commandArguments, "ifcOutput")
-
-		var absoluteModuleInterfaceFile = targetRootDirectory + arguments.ModuleInterfaceTarget
-		MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, absoluteModuleInterfaceFile.toString)
-
-		return commandArguments
-	}
-
-	static BuildPartitionUnitCompilerArguments(
-		targetRootDirectory,
-		arguments,
-		responseFile) {
-		// Build the arguments for a standard translation unit
-		var commandArguments = []
-
-		// Add the response file
-		commandArguments.add("@" + responseFile.toString)
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			MSVCArgumentBuilder.AddFlag(commandArguments, "reference")
-			MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the source file as input
-		commandArguments.add(arguments.SourceFile.toString)
-
-		// Add the target file as outputs
-		var absoluteTargetFile = targetRootDirectory + arguments.TargetFile
-		MSVCArgumentBuilder.AddFlagValueWithQuotes(
-			commandArguments,
-			MSVCArgumentBuilder.Compiler_ArgumentParameter_ObjectFile,
-			absoluteTargetFile.toString)
-
-		// Add the unique arguments for an partition unit
-		MSVCArgumentBuilder.AddFlag(commandArguments, "interface")
-
-		// Specify the module interface file output
-		MSVCArgumentBuilder.AddFlag(commandArguments, "ifcOutput")
-
-		var absoluteModuleInterfaceFile = targetRootDirectory + arguments.ModuleInterfaceTarget
-		MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, absoluteModuleInterfaceFile.toString)
-
-		return commandArguments
-	}
-
 	static BuildTranslationUnitCompilerArguments(
 		targetRootDirectory,
 		arguments,
-		responseFile,
-		internalModules) {
+		responseFile) {
 		// Calculate object output file
 		var commandArguments = []
 
 		// Add the response file
 		commandArguments.add("@" + responseFile.toString)
-
-		// Add the internal module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			MSVCArgumentBuilder.AddFlag(commandArguments, "reference")
-			MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the internal module references as input
-		for (moduleFile in internalModules) {
-			MSVCArgumentBuilder.AddFlag(commandArguments, "reference")
-			MSVCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
 
 		// Add the source file as input
 		commandArguments.add(arguments.SourceFile.toString)

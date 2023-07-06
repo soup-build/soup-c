@@ -7,7 +7,7 @@ import "Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
 import "Soup.Build.Utils:./BuildOperation" for BuildOperation
 import "../Core/LinkArguments" for LinkArguments, LinkTarget
-import "../Core/CompileArguments" for InterfaceUnitCompileArguments, LanguageStandard, OptimizationLevel,  SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
+import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
 
 class ClangCompilerUnitTests {
 	construct new() {
@@ -18,12 +18,6 @@ class ClangCompilerUnitTests {
 		this.Initialize()
 		System.print("ClangCompilerUnitTests.Compile_Simple")
 		this.Compile_Simple()
-		System.print("ClangCompilerUnitTests.Compile_Module_Partition")
-		this.Compile_Module_Partition()
-		System.print("ClangCompilerUnitTests.Compile_Module_Interface")
-		this.Compile_Module_Interface()
-		System.print("ClangCompilerUnitTests.Compile_Module_PartitionInterfaceAndImplementation")
-		this.Compile_Module_PartitionInterfaceAndImplementation()
 		// System.print("ClangCompilerUnitTests.Compile_Resource")
 		// this.Compile_Resource()
 		System.print("ClangCompilerUnitTests.LinkStaticLibrary_Simple")
@@ -41,7 +35,6 @@ class ClangCompilerUnitTests {
 			Path.new("C:/bin/mock.ar"))
 		Assert.Equal("Clang", uut.Name)
 		Assert.Equal("o", uut.ObjectFileExtension)
-		Assert.Equal("pcm", uut.ModuleFileExtension)
 		Assert.Equal(Path.new("libTest.a"), uut.CreateStaticLibraryFileName("Test"))
 		Assert.Equal("so", uut.DynamicLibraryFileExtension)
 		Assert.Equal("res", uut.ResourceFileExtension)
@@ -54,14 +47,14 @@ class ClangCompilerUnitTests {
 			Path.new("C:/bin/mock.ar"))
 
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.SourceRootDirectory = Path.new("C:/source/")
 		arguments.TargetRootDirectory = Path.new("C:/target/")
 		arguments.ObjectDirectory = Path.new("ObjectDir/")
 
 		var translationUnitArguments = TranslationUnitCompileArguments.new()
-		translationUnitArguments.SourceFile = Path.new("File.cpp")
+		translationUnitArguments.SourceFile = Path.new("File.c")
 		translationUnitArguments.TargetFile = Path.new("obj/File.o")
 
 		arguments.ImplementationUnits = [
@@ -78,348 +71,28 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c++11 -O0 -mpclmul -maes -msse4.1 -msha -c",
+					"-std=c11 -O0 -mpclmul -maes -msse4.1 -msha -c",
 				],
 				[],
 				[
 					Path.new("./ObjectDir/SharedCompileArguments.rsp"),
 				]),
 			BuildOperation.new(
-				"./File.cpp",
+				"./File.c",
 				Path.new("C:/source/"),
 				Path.new("C:/bin/mock.clang++"),
 				[
 					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"./File.cpp",
+					"./File.c",
 					"-o",
 					"C:/target/obj/File.o",
 				],
 				[
-					Path.new("File.cpp"),
+					Path.new("File.c"),
 					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
 				],
 				[
 					Path.new("C:/target/obj/File.o"),
-				]),
-		]
-
-		Assert.ListEqual(expected, result)
-	}
-
-	// [Fact]
-	Compile_Module_Partition() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
-
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.SourceRootDirectory = Path.new("C:/source/")
-		arguments.TargetRootDirectory = Path.new("C:/target/")
-		arguments.ObjectDirectory = Path.new("ObjectDir/")
-		arguments.IncludeDirectories = [
-			Path.new("Includes"),
-		]
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-		]
-		arguments.PreprocessorDefinitions = [
-			"DEBUG",
-		]
-		arguments.InterfacePartitionUnits = [
-			InterfaceUnitCompileArguments.new(
-				Path.new("File.cpp"),
-				Path.new("obj/File.o"),
-				[
-					Path.new("obj/Other.pcm"),
-				],
-				Path.new("obj/File.pcm")),
-		]
-
-		var result = uut.CreateCompileOperations(arguments)
-
-		// Verify result
-		var expected = [
-			BuildOperation.new(
-				"WriteFile [./ObjectDir/SharedCompileArguments.rsp]",
-				Path.new("C:/target/"),
-				Path.new("./writefile.exe"),
-				[
-					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c++11 -O0 -I\"./Includes\" -DDEBUG -fmodule-file=Module=./Module.pcm -mpclmul -maes -msse4.1 -msha -c",
-				],
-				[],
-				[
-					Path.new("./ObjectDir/SharedCompileArguments.rsp"),
-				]),
-			BuildOperation.new(
-				"./File.cpp",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"-fmodule-file=Other=./obj/Other.pcm",
-					"./File.cpp",
-					"-o",
-					"C:/target/obj/File.o",
-					"--precompile",
-					"-o",
-					"\"C:/target/obj/File.pcm\"",
-				],
-				[
-					Path.new("Module.pcm"),
-					Path.new("File.cpp"),
-					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
-					Path.new("obj/Other.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File.o"),
-					Path.new("C:/target/obj/File.pcm"),
-				]),
-		]
-
-		Assert.ListEqual(expected, result)
-	}
-
-	// [Fact]
-	Compile_Module_Interface() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
-
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.SourceRootDirectory = Path.new("C:/source/")
-		arguments.TargetRootDirectory = Path.new("C:/target/")
-		arguments.ObjectDirectory = Path.new("ObjectDir/")
-		arguments.IncludeDirectories = [
-			Path.new("Includes"),
-		]
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-		]
-		arguments.PreprocessorDefinitions = [
-			"DEBUG",
-		]
-
-		arguments.InterfaceUnit = InterfaceUnitCompileArguments.new(
-			Path.new("File.cpp"),
-			Path.new("obj/File.o"),
-			[
-				Path.new("obj/Other.pcm")
-			],
-			Path.new("obj/File.pcm"))
-
-		var result = uut.CreateCompileOperations(arguments)
-
-		// Verify result
-		var expected = [
-			BuildOperation.new(
-				"WriteFile [./ObjectDir/SharedCompileArguments.rsp]",
-				Path.new("C:/target/"),
-				Path.new("./writefile.exe"),
-				[
-					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c++11 -O0 -I\"./Includes\" -DDEBUG -fmodule-file=Module=./Module.pcm -mpclmul -maes -msse4.1 -msha -c",
-				],
-				[],
-				[
-					Path.new("./ObjectDir/SharedCompileArguments.rsp"),
-				]),
-			BuildOperation.new(
-				"./File.cpp",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"-fmodule-file=Other=./obj/Other.pcm",
-					"-x",
-					"c++-module",
-					"./File.cpp",
-					"--precompile",
-					"-o",
-					"C:/target/obj/File.pcm",
-				],
-				[
-					Path.new("Module.pcm"),
-					Path.new("File.cpp"),
-					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
-					Path.new("obj/Other.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File.pcm"),
-				]),
-			BuildOperation.new(
-				"./obj/File.pcm",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"-c",
-					"C:/target/obj/File.pcm",
-					"-o",
-					"C:/target/obj/File.o",
-				],
-				[
-					Path.new("C:/target/obj/File.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File.o"),
-				]),
-		]
-
-		Assert.ListEqual(expected, result)
-	}
-
-	// [Fact]
-	Compile_Module_PartitionInterfaceAndImplementation() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
-
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.SourceRootDirectory = Path.new("C:/source/")
-		arguments.TargetRootDirectory = Path.new("C:/target/")
-		arguments.ObjectDirectory = Path.new("ObjectDir/")
-		arguments.IncludeDirectories = [
-			Path.new("Includes"),
-		]
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-		]
-		arguments.PreprocessorDefinitions = [
-			"DEBUG",
-		]
-		arguments.InterfacePartitionUnits = [
-			InterfaceUnitCompileArguments.new(
-				Path.new("File1.cpp"),
-				Path.new("obj/File1.o"),
-				[
-					Path.new("obj/Other1.pcm")
-				],
-				Path.new("obj/File1.pcm")),
-		]
-		arguments.InterfaceUnit = InterfaceUnitCompileArguments.new(
-			Path.new("File2.cpp"),
-			Path.new("obj/File2.o"),
-			[
-				Path.new("obj/Other2.pcm")
-			],
-			Path.new("obj/File2.pcm"))
-		arguments.ImplementationUnits = [
-			TranslationUnitCompileArguments.new(
-				Path.new("File3.cpp"),
-				Path.new("obj/File3.o"),
-				[
-					Path.new("obj/Other3.pcm")
-				])
-		]
-
-		var result = uut.CreateCompileOperations(arguments)
-
-		// Verify result
-		var expected = [
-			BuildOperation.new(
-				"WriteFile [./ObjectDir/SharedCompileArguments.rsp]",
-				Path.new("C:/target/"),
-				Path.new("./writefile.exe"),
-				[
-					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c++11 -O0 -I\"./Includes\" -DDEBUG -fmodule-file=Module=./Module.pcm -mpclmul -maes -msse4.1 -msha -c",
-				],
-				[],
-				[
-					Path.new("./ObjectDir/SharedCompileArguments.rsp"),
-				]),
-			BuildOperation.new(
-				"./File1.cpp",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"-fmodule-file=Other1=./obj/Other1.pcm",
-					"./File1.cpp",
-					"-o",
-					"C:/target/obj/File1.o",
-					"--precompile",
-					"-o",
-					"\"C:/target/obj/File1.pcm\"",
-				],
-				[
-					Path.new("Module.pcm"),
-					Path.new("File1.cpp"),
-					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
-					Path.new("obj/Other1.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File1.o"),
-					Path.new("C:/target/obj/File1.pcm"),
-				]),
-			BuildOperation.new(
-				"./File2.cpp",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"-fmodule-file=Other2=./obj/Other2.pcm",
-					"-x",
-					"c++-module",
-					"./File2.cpp",
-					"--precompile",
-					"-o",
-					"C:/target/obj/File2.pcm",
-				],
-				[
-					Path.new("Module.pcm"),
-					Path.new("File2.cpp"),
-					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
-					Path.new("obj/Other2.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File2.pcm"),
-				]),
-			BuildOperation.new(
-				"./obj/File2.pcm",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"-c",
-					"C:/target/obj/File2.pcm",
-					"-o",
-					"C:/target/obj/File2.o",
-				],
-				[
-					Path.new("C:/target/obj/File2.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File2.o"),
-				]),
-			BuildOperation.new(
-				"./File3.cpp",
-				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
-				[
-					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
-					"-fmodule-file=Other3=./obj/Other3.pcm",
-					"-fmodule-file=File1=C:/target/obj/File1.pcm",
-					"-fmodule-file=File2=C:/target/obj/File2.pcm",
-					"./File3.cpp",
-					"-o",
-					"C:/target/obj/File3.o",
-				],
-				[
-					Path.new("Module.pcm"),
-					Path.new("File3.cpp"),
-					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
-					Path.new("obj/Other3.pcm"),
-					Path.new("C:/target/obj/File1.pcm"),
-					Path.new("C:/target/obj/File2.pcm"),
-				],
-				[
-					Path.new("C:/target/obj/File3.o"),
 				]),
 		]
 
@@ -433,16 +106,13 @@ class ClangCompilerUnitTests {
 			Path.new("C:/bin/mock.ar"))
 
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.SourceRootDirectory = Path.new("C:/source/")
 		arguments.TargetRootDirectory = Path.new("C:/target/")
 		arguments.ObjectDirectory = Path.new("ObjectDir/")
 		arguments.IncludeDirectories = [
 			Path.new("Includes"),
-		]
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
 		]
 		arguments.PreprocessorDefinitions = [
 			"DEBUG"
@@ -461,7 +131,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c++11 -O0 -I\"./Includes\" -DDEBUG -fmodule-file=Module=./Module.pcm -mpclmul -maes -msse4.1 -msha -c",
+					"-std=c11 -O0 -I\"./Includes\" -DDEBUG -mpclmul -maes -msse4.1 -msha -c",
 				],
 				[],
 				[
@@ -481,7 +151,6 @@ class ClangCompilerUnitTests {
 					"./Resources.rc",
 				],
 				[
-					Path.new("Module.pcm"),
 					Path.new("Resources.rc"),
 					Path.new("C:/target/fake_file"),
 				],

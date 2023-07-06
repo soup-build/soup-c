@@ -17,11 +17,6 @@ class ICompiler {
 	ObjectFileExtension {}
 
 	/// <summary>
-	/// Gets the module file extension for the compiler
-	/// </summary>
-	ModuleFileExtension {}
-
-	/// <summary>
 	/// Gets the static library file extension for the compiler
 	/// TODO: This is platform specific
 	/// </summary>

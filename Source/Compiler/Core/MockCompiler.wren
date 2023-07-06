@@ -44,11 +44,6 @@ class MockCompiler is ICompiler {
 	ObjectFileExtension { "mock.obj" }
 
 	/// <summary>
-	/// Gets the module file extension for the compiler
-	/// </summary>
-	ModuleFileExtension { "mock.bmi" }
-
-	/// <summary>
 	/// Gets the static library file extension for the compiler
 	/// TODO: This is platform specific
 	/// </summary>
@@ -75,42 +70,6 @@ class MockCompiler is ICompiler {
 		_compileRequests.add(arguments)
 
 		var result = []
-
-		for (fileArguments in arguments.InterfacePartitionUnits) {
-			result.add(
-				BuildOperation.new(
-					"MockCompilePartition: %(_compileRequests.count)",
-					Path.new("MockWorkingDirectory"),
-					Path.new("MockCompiler.exe"),
-					[
-						"Arguments",
-					],
-					[
-						fileArguments.SourceFile,
-					],
-					[
-						fileArguments.TargetFile,
-						fileArguments.ModuleInterfaceTarget,
-					]))
-		}
-
-		if (!(arguments.InterfaceUnit is Null)) {
-			result.add(
-				BuildOperation.new(
-					"MockCompileModule: %(_compileRequests.count)",
-					Path.new("MockWorkingDirectory"),
-					Path.new("MockCompiler.exe"),
-					[
-						"Arguments",
-					],
-					[
-						arguments.InterfaceUnit.SourceFile,
-					],
-					[
-						arguments.InterfaceUnit.TargetFile,
-						arguments.InterfaceUnit.ModuleInterfaceTarget,
-					]))
-		}
 
 		for (fileArguments in arguments.ImplementationUnits) {
 			result.add(

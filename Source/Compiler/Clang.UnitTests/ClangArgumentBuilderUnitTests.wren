@@ -5,7 +5,7 @@
 import "../Clang/ClangArgumentBuilder" for ClangArgumentBuilder
 import "Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
-import "../Core/CompileArguments" for InterfaceUnitCompileArguments, LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 
 class ClangArgumentBuilderUnitTests {
 	construct new() {
@@ -13,13 +13,9 @@ class ClangArgumentBuilderUnitTests {
 
 	RunTests() {
 		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP11, "-std=c++11")
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, "-std=c11")
 		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP14, "-std=c++14")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP17, "-std=c++17")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard_CPP20")
-		this.BSCA_SingleArgument_LanguageStandard_CPP20()
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, "-std=c17")
 		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
 		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
@@ -34,26 +30,15 @@ class ClangArgumentBuilderUnitTests {
 		this.BSCA_SingleArgument_IncludePaths()
 		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions")
 		this.BSCA_SingleArgument_PreprocessorDefinitions()
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_Modules")
-		this.BSCA_SingleArgument_Modules()
-		System.print("ClangArgumentBuilderUnitTests.BuildPartitionUnitCompilerArguments")
-		this.BuildPartitionUnitCompilerArguments()
-		System.print("ClangArgumentBuilderUnitTests.BuildInterfaceUnitPrecompileCompilerArguments")
-		this.BuildInterfaceUnitPrecompileCompilerArguments()
-		System.print("ClangArgumentBuilderUnitTests.BuildInterfaceUnitCompileCompilerArguments")
-		this.BuildInterfaceUnitCompileCompilerArguments()
 		System.print("ClangArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple")
 		this.BuildTranslationUnitCompilerArguments_Simple()
-		System.print("ClangArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_InternalModules")
-		this.BuildTranslationUnitCompilerArguments_InternalModules()
 		System.print("ClangArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple")
 		this.BuildAssemblyUnitCompilerArguments_Simple()
 	}
 
 	// [Theory]
-	// [InlineData(LanguageStandard.CPP11, "-std=c++11")]
-	// [InlineData(LanguageStandard.CPP14, "-std=c++14")]
-	// [InlineData(LanguageStandard.CPP17, "-std=c++17")]
+	// [InlineData(LanguageStandard.C11, "-std=c11")]
+	// [InlineData(LanguageStandard.C17, "-std=c17")]
 	BSCA_SingleArgument_LanguageStandard(
 		standard,
 		expectedFlag) {
@@ -78,38 +63,16 @@ class ClangArgumentBuilderUnitTests {
 	}
 
 	// [Fact]
-	BSCA_SingleArgument_LanguageStandard_CPP20() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP20
-		arguments.Optimize = OptimizationLevel.None
-
-		var actualArguments = ClangArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"-std=c++20",
-			"-O0",
-			"-mpclmul",
-			"-maes",
-			"-msse4.1",
-			"-msha", 
-			"-c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
 	BSCA_SingleArgument_OptimizationLevel_Disabled() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 
 		var actualArguments = ClangArgumentBuilder.BuildSharedCompilerArguments(
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-mpclmul",
 			"-maes",
@@ -128,14 +91,14 @@ class ClangArgumentBuilderUnitTests {
 		level,
 		expectedFlag) {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = level
 
 		var actualArguments = ClangArgumentBuilder.BuildSharedCompilerArguments(
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++17",
+			"-std=c17",
 			expectedFlag,
 			"-mpclmul",
 			"-maes",
@@ -150,7 +113,7 @@ class ClangArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_EnableWarningsAsErrors() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.EnableWarningsAsErrors = true
 
@@ -159,7 +122,7 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-Werror",
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-mpclmul",
 			"-maes",
@@ -174,7 +137,7 @@ class ClangArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_GenerateDebugInformation() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.GenerateSourceDebugInfo = true
 
@@ -183,7 +146,7 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-g",
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-mpclmul",
 			"-maes",
@@ -198,7 +161,7 @@ class ClangArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_IncludePaths() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.IncludeDirectories = [
 			Path.new("C:/Files/SDK/"),
@@ -209,7 +172,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++11",
+			"-std=c11",
 			"-O0",
 			"-I\"C:/Files/SDK/\"",
 			"-I\"./my files/\"",
@@ -226,7 +189,7 @@ class ClangArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_PreprocessorDefinitions() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.PreprocessorDefinitions = [
 			"DEBUG",
@@ -237,7 +200,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++11",
+			"-std=c11",
 			"-O0",
 			"-DDEBUG",
 			"-DVERSION=1",
@@ -252,171 +215,24 @@ class ClangArgumentBuilderUnitTests {
 	}
 
 	// [Fact]
-	BSCA_SingleArgument_Modules() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-			Path.new("Std.pcm"),
-		]
-
-		var actualArguments = ClangArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"-std=c++11",
-			"-O0",
-			"-fmodule-file=Module=./Module.pcm",
-			"-fmodule-file=Std=./Std.pcm",
-			"-mpclmul",
-			"-maes",
-			"-msse4.1",
-			"-msha", 
-			"-c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildPartitionUnitCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.o")
-		arguments.ModuleInterfaceTarget = Path.new("module.pcm")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = ClangArgumentBuilder.BuildPartitionUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"./module.cpp",
-			"-o",
-			"C:/target/module.o",
-			"--precompile",
-			"-o",
-			"\"C:/target/module.pcm\"",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildInterfaceUnitPrecompileCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.o")
-		arguments.ModuleInterfaceTarget = Path.new("module.pcm")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = ClangArgumentBuilder.BuildInterfaceUnitPrecompileCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"-x",
-			"c++-module",
-			"./module.cpp",
-			"--precompile",
-			"-o",
-			"C:/target/module.pcm",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildInterfaceUnitCompileCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.o")
-		arguments.ModuleInterfaceTarget = Path.new("module.pcm")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = ClangArgumentBuilder.BuildInterfaceUnitCompileCompilerArguments(
-			targetRootDirectory,
-			arguments)
-
-		var expectedArguments = [
-			"-c",
-			"C:/target/module.pcm",
-			"-o",
-			"C:/target/module.o",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
 	BuildTranslationUnitCompilerArguments_Simple() {
 		var targetRootDirectory = Path.new("C:/target/")
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.o")
+		arguments.SourceFile = Path.new("file1.cpp")
+		arguments.TargetFile = Path.new("file1.o")
 
 		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = []
 
 		var actualArguments = ClangArgumentBuilder.BuildTranslationUnitCompilerArguments(
 			targetRootDirectory,
 			arguments,
-			responseFile,
-			internalModules)
+			responseFile)
 
 		var expectedArguments = [
 			"@./ResponseFile.txt",
-			"./module.cpp",
+			"./file1.cpp",
 			"-o",
-			"C:/target/module.o",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildTranslationUnitCompilerArguments_InternalModules() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.o")
-		arguments.IncludeModules = [
-			Path.new("Module1.pcm"),
-			Path.new("Module2.pcm"),
-		]
-
-		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = [
-			Path.new("Module3.pcm"),
-			Path.new("Module4.pcm"),
-		]
-
-		var actualArguments = ClangArgumentBuilder.BuildTranslationUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile,
-			internalModules)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"-fmodule-file=Module1=./Module1.pcm",
-			"-fmodule-file=Module2=./Module2.pcm",
-			"-fmodule-file=Module3=./Module3.pcm",
-			"-fmodule-file=Module4=./Module4.pcm",
-			"./module.cpp",
-			"-o",
-			"C:/target/module.o",
+			"C:/target/file1.o",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -427,8 +243,8 @@ class ClangArgumentBuilderUnitTests {
 		var targetRootDirectory = Path.new("C:/target/")
 		var sharedArguments = SharedCompileArguments.new()
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.asm")
-		arguments.TargetFile = Path.new("module.o")
+		arguments.SourceFile = Path.new("file1.asm")
+		arguments.TargetFile = Path.new("file1.o")
 
 		var actualArguments = ClangArgumentBuilder.BuildAssemblyUnitCompilerArguments(
 			targetRootDirectory,
@@ -437,9 +253,9 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-o",
-			"C:/target/module.o",
+			"C:/target/file1.o",
 			"-c",
-			"./module.asm",
+			"./file1.asm",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)

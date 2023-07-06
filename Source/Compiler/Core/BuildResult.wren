@@ -8,7 +8,6 @@
 class BuildResult {
 	construct new() {
 		_buildOperations = []
-		_moduleDependencies = []
 		_linkDependencies = []
 		_internalLinkDependencies = []
 		_runtimeDependencies = []
@@ -21,12 +20,6 @@ class BuildResult {
 	/// </summary>
 	BuildOperations { _buildOperations }
 	BuildOperations=(value) { _buildOperations = value }
-
-	/// <summary>
-	/// Gets or sets the list of module dependencies
-	/// </summary>
-	ModuleDependencies { _moduleDependencies }
-	ModuleDependencies=(value) { _moduleDependencies = value }
 
 	/// <summary>
 	/// Gets or sets the list of link libraries that downstream builds should use when linking

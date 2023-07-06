@@ -6,7 +6,7 @@ import "soup" for Soup
 import "./BuildResult" for BuildResult
 import "./BuildArguments" for BuildOptimizationLevel, BuildTargetType
 import "./LinkArguments" for LinkArguments, LinkTarget
-import "./CompileArguments" for InterfaceUnitCompileArguments, OptimizationLevel, ResourceCompileArguments, SharedCompileArguments, TranslationUnitCompileArguments
+import "./CompileArguments" for OptimizationLevel, ResourceCompileArguments, SharedCompileArguments, TranslationUnitCompileArguments
 import "Soup.Build.Utils:./SharedOperations" for SharedOperations
 import "Soup.Build.Utils:./Path" for Path
 import "Soup.Build.Utils:./Set" for Set
@@ -24,10 +24,6 @@ class BuildEngine {
 	/// </summary>
 	Execute(arguments) {
 		var result = BuildResult.new()
-
-		// All dependencies must include the entire interface dependency closure
-		result.ModuleDependencies = []
-		result.ModuleDependencies = result.ModuleDependencies + arguments.ModuleDependencies
 
 		// Ensure the output directories exists as the first step
 		result.BuildOperations.add(
@@ -55,13 +51,11 @@ class BuildEngine {
 	}
 
 	/// <summary>
-	/// Compile the module and source files
+	/// Compile the source files
 	/// </summary>
 	CoreCompile(arguments, result) {
 		// Ensure there are actually files to build
-		if (arguments.ModuleInterfacePartitionSourceFiles.count != 0 ||
-			!(arguments.ModuleInterfaceSourceFile is Null) ||
-			arguments.SourceFiles.count != 0 ||
+		if (arguments.SourceFiles.count != 0 ||
 			arguments.AssemblySourceFiles.count != 0) {
 			// Setup the shared properties
 			var compileArguments = SharedCompileArguments.new()
@@ -71,7 +65,6 @@ class BuildEngine {
 			compileArguments.TargetRootDirectory = arguments.TargetRootDirectory
 			compileArguments.ObjectDirectory = arguments.ObjectDirectory
 			compileArguments.IncludeDirectories = arguments.IncludeDirectories
-			compileArguments.IncludeModules = arguments.ModuleDependencies
 			compileArguments.PreprocessorDefinitions = arguments.PreprocessorDefinitions
 			compileArguments.GenerateSourceDebugInfo = arguments.GenerateSourceDebugInfo
 			compileArguments.EnableWarningsAsErrors = arguments.EnableWarningsAsErrors
@@ -94,84 +87,6 @@ class BuildEngine {
 
 				// Add the resource file arguments to the shared build definition
 				compileArguments.ResourceFile = compileResourceFileArguments
-			}
-
-			// Build up the entire Interface Dependency Closure for each file
-			var partitionInterfaceDependencyLookup = {}
-			for (file in arguments.ModuleInterfacePartitionSourceFiles) {
-				partitionInterfaceDependencyLookup[file.File.toString] = file.Imports
-			}
-
-			// Compile the individual module interface partition translation units
-			var compileInterfacePartitionUnits = []
-			var allPartitionInterfaces = []
-			for (file in arguments.ModuleInterfacePartitionSourceFiles) {
-				Soup.info("Generate Module Interface Partition Compile Operation: %(file.File)")
-
-				var objectModuleInterfaceFile =
-					arguments.ObjectDirectory +
-					Path.new(file.File.GetFileName())
-				objectModuleInterfaceFile.SetFileExtension(_compiler.ModuleFileExtension)
-
-				var interfaceDependencyClosure = Set.new()
-				this.BuildClosure(interfaceDependencyClosure, file.File, partitionInterfaceDependencyLookup)
-				if (interfaceDependencyClosure.contains(file.File)) {
-					Fiber.abort("Circular partition references in: %(file.File)")
-				}
-
-				var partitionImports = []
-				for (dependency in interfaceDependencyClosure.list) {
-					var importInterface = arguments.ObjectDirectory + Path.new(dependency.GetFileName())
-					importInterface.SetFileExtension(_compiler.ModuleFileExtension)
-					partitionImports.add(arguments.TargetRootDirectory + importInterface)
-				}
-
-				var compileFileArguments = InterfaceUnitCompileArguments.new()
-				compileFileArguments.SourceFile = file.File
-				compileFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(file.File.GetFileName())
-				compileFileArguments.IncludeModules = partitionImports
-				compileFileArguments.ModuleInterfaceTarget = objectModuleInterfaceFile
-
-				compileFileArguments.TargetFile.SetFileExtension(_compiler.ObjectFileExtension)
-
-				compileInterfacePartitionUnits.add(compileFileArguments)
-				allPartitionInterfaces.add(arguments.TargetRootDirectory + objectModuleInterfaceFile)
-			}
-
-			// Add all partition unit interface files as module dependencies since MSVC does not
-			// combine the interfaces into the final interface unit
-			for (module in allPartitionInterfaces) {
-				result.ModuleDependencies.add(module)
-			}
-
-			compileArguments.InterfacePartitionUnits = compileInterfacePartitionUnits
-
-			// Compile the module interface unit if present
-			if (!(arguments.ModuleInterfaceSourceFile is Null)) {
-				Soup.info("Generate Module Interface Unit Compile: %(arguments.ModuleInterfaceSourceFile)")
-
-				var binaryOutputModuleInterfaceFile =
-					arguments.BinaryDirectory +
-					Path.new(arguments.TargetName + "." + _compiler.ModuleFileExtension)
-
-				var compileModuleFileArguments = InterfaceUnitCompileArguments.new()
-				compileModuleFileArguments.SourceFile = arguments.ModuleInterfaceSourceFile
-				compileModuleFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(arguments.ModuleInterfaceSourceFile.GetFileName())
-				compileModuleFileArguments.IncludeModules = allPartitionInterfaces
-				compileModuleFileArguments.ModuleInterfaceTarget = binaryOutputModuleInterfaceFile
-
-				compileModuleFileArguments.TargetFile.SetFileExtension(_compiler.ObjectFileExtension)
-
-				// Add the interface unit arguments to the shared build definition
-				compileArguments.InterfaceUnit = compileModuleFileArguments
-
-				// Add output module interface to the parent set of modules
-				// This will allow the module implementation units access as well as downstream
-				// dependencies to the public interface.
-				result.ModuleDependencies.add(
-					binaryOutputModuleInterfaceFile.HasRoot ?
-						binaryOutputModuleInterfaceFile :
-						arguments.TargetRootDirectory + binaryOutputModuleInterfaceFile)
 			}
 
 			// Compile the individual translation units
@@ -328,20 +243,6 @@ class BuildEngine {
 			objectFiles.add(compiledResourceFile)
 		}
 
-		// Add the partition object files
-		for (sourceFile in arguments.ModuleInterfacePartitionSourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.File.GetFileName())
-			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
-			objectFiles.add(objectFile)
-		}
-
-		// Add the module interface object file if present
-		if (!(arguments.ModuleInterfaceSourceFile is Null)) {
-			var objectFile = arguments.ObjectDirectory + Path.new(arguments.ModuleInterfaceSourceFile.GetFileName())
-			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
-			objectFiles.add(objectFile)
-		}
-
 		// Add the implementation unit object files
 		for (sourceFile in arguments.SourceFiles) {
 			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
@@ -433,13 +334,6 @@ class BuildEngine {
 						
 					result.BuildOperations.add(operation)
 			}
-		}
-	}
-
-	BuildClosure(closure, file, partitionInterfaceDependencyLookup) {
-		for (childFile in partitionInterfaceDependencyLookup[file.toString]) {
-			closure.add(childFile)
-			this.BuildClosure(closure, childFile, partitionInterfaceDependencyLookup)
 		}
 	}
 

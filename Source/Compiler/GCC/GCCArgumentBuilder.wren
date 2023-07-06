@@ -53,14 +53,10 @@ class GCCArgumentBuilder {
 		}
 
 		// Set the language standard
-		if (arguments.Standard == LanguageStandard.CPP11) {
-			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++11")
-		} else if (arguments.Standard == LanguageStandard.CPP14) {
-			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++14")
-		} else if (arguments.Standard == LanguageStandard.CPP17) {
-			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++17")
-		} else if (arguments.Standard == LanguageStandard.CPP20) {
-			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c++20")
+		if (arguments.Standard == LanguageStandard.C11) {
+			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c11")
+		} else if (arguments.Standard == LanguageStandard.C17) {
+			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c17")
 		} else {
 			Fiber.abort("Unknown language standard %(arguments.Standard).")
 		}
@@ -84,12 +80,6 @@ class GCCArgumentBuilder {
 		// Set the preprocessor definitions
 		for (definition in arguments.PreprocessorDefinitions) {
 			GCCArgumentBuilder.AddFlagValue(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_PreprocessorDefine, definition)
-		}
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			GCCArgumentBuilder.AddFlag(commandArguments, "reference")
-			GCCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
 		}
 
 		// Only run preprocessor, compile and assemble
@@ -135,108 +125,15 @@ class GCCArgumentBuilder {
 		return commandArguments
 	}
 
-	static BuildInterfaceUnitCompilerArguments(
-		targetRootDirectory,
-		arguments,
-		responseFile) {
-		// Build the arguments for a standard translation unit
-		var commandArguments = []
-
-		// Add the response file
-		commandArguments.add("@" + responseFile.toString)
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			GCCArgumentBuilder.AddFlag(commandArguments, "reference")
-			GCCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the source file as input
-		commandArguments.add(arguments.SourceFile.toString)
-
-		// Add the target file as outputs
-		var absoluteTargetFile = targetRootDirectory + arguments.TargetFile
-		GCCArgumentBuilder.AddFlag(
-			commandArguments,
-			GCCArgumentBuilder.Compiler_ArgumentParameter_Output)
-		GCCArgumentBuilder.AddValue(
-			commandArguments,
-			absoluteTargetFile.toString)
-
-		// Add the unique arguments for an interface unit
-		GCCArgumentBuilder.AddFlag(commandArguments, "fmodules-ts")
-
-		// Specify the module interface file output
-		// GCCArgumentBuilder.AddFlag(commandArguments, "ifcOutput")
-
-		// var absoluteModuleInterfaceFile = targetRootDirectory + arguments.ModuleInterfaceTarget
-		// GCCArgumentBuilder.AddValueWithQuotes(commandArguments, absoluteModuleInterfaceFile.toString)
-
-		return commandArguments
-	}
-
-	static BuildPartitionUnitCompilerArguments(
-		targetRootDirectory,
-		arguments,
-		responseFile) {
-		// Build the arguments for a standard translation unit
-		var commandArguments = []
-
-		// Add the response file
-		commandArguments.add("@" + responseFile.toString)
-
-		// Add the module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			GCCArgumentBuilder.AddFlag(commandArguments, "reference")
-			GCCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the source file as input
-		commandArguments.add(arguments.SourceFile.toString)
-
-		// Add the target file as outputs
-		var absoluteTargetFile = targetRootDirectory + arguments.TargetFile
-		GCCArgumentBuilder.AddFlag(
-			commandArguments,
-			GCCArgumentBuilder.Compiler_ArgumentParameter_Output)
-		GCCArgumentBuilder.AddValue(
-			commandArguments,
-			absoluteTargetFile.toString)
-
-		// Add the unique arguments for an partition unit
-		GCCArgumentBuilder.AddFlag(commandArguments, "interface")
-
-		// Specify the module interface file output
-		GCCArgumentBuilder.AddFlag(commandArguments, "ifcOutput")
-
-		var absoluteModuleInterfaceFile = targetRootDirectory + arguments.ModuleInterfaceTarget
-		GCCArgumentBuilder.AddValueWithQuotes(commandArguments, absoluteModuleInterfaceFile.toString)
-
-		return commandArguments
-	}
-
 	static BuildTranslationUnitCompilerArguments(
 		targetRootDirectory,
 		arguments,
-		responseFile,
-		internalModules) {
+		responseFile) {
 		// Calculate object output file
 		var commandArguments = []
 
 		// Add the response file
 		commandArguments.add("@" + responseFile.toString)
-
-		// Add the internal module references as input
-		for (moduleFile in arguments.IncludeModules) {
-			GCCArgumentBuilder.AddFlag(commandArguments, "reference")
-			GCCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
-
-		// Add the internal module references as input
-		for (moduleFile in internalModules) {
-			GCCArgumentBuilder.AddFlag(commandArguments, "reference")
-			GCCArgumentBuilder.AddValueWithQuotes(commandArguments, moduleFile.toString)
-		}
 
 		// Add the source file as input
 		commandArguments.add(arguments.SourceFile.toString)

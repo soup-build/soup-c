@@ -7,7 +7,7 @@ import "../../Extension/Tasks/BuildTask" for BuildTask
 import "../../Compiler/Core/BuildArguments" for BuildOptimizationLevel, BuildTargetType
 import "../../Compiler/Core/LinkArguments" for LinkArguments, LinkTarget
 import "../../Compiler/Core/MockCompiler" for MockCompiler
-import "../../Compiler/Core/CompileArguments" for InterfaceUnitCompileArguments, LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../../Compiler/Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 import "Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
 
@@ -22,12 +22,6 @@ class BuildTaskUnitTests {
 		this.Build_Executable()
 		System.print("BuildTaskUnitTests.Build_Library_MultipleFiles")
 		this.Build_Library_MultipleFiles()
-		System.print("BuildTaskUnitTests.Build_Library_ModuleInterface")
-		this.Build_Library_ModuleInterface()
-		System.print("BuildTaskUnitTests.Build_Library_ModuleInterface_WithPartitions")
-		this.Build_Library_ModuleInterface_WithPartitions()
-		System.print("BuildTaskUnitTests.Build_Library_ModuleInterfaceNoSource")
-		this.Build_Library_ModuleInterfaceNoSource()
 	}
 
 	Build_WindowsApplication() {
@@ -43,13 +37,13 @@ class BuildTaskUnitTests {
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Program"
 		buildTable["TargetType"] = BuildTargetType.WindowsApplication
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
+		buildTable["LanguageStandard"] = LanguageStandard.C17
 		buildTable["SourceRootDirectory"] = "C:/source/"
 		buildTable["TargetRootDirectory"] = "C:/target/"
 		buildTable["ObjectDirectory"] = "obj/"
 		buildTable["BinaryDirectory"] = "bin/"
 		buildTable["Source"] = [
-			"TestFile.cpp",
+			"TestFile.c",
 		]
 
 		// Setup dependencies table
@@ -75,7 +69,7 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			[
 				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Compile Operation: ./TestFile.cpp",
+				"INFO: Generate Compile Operation: ./TestFile.c",
 				"INFO: CoreLink",
 				"INFO: Linking target",
 				"INFO: Generate Link Operation: ./bin/Program.exe",
@@ -84,14 +78,14 @@ class BuildTaskUnitTests {
 			SoupTest.logs)
 
 		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
+		expectedCompileArguments.Standard = LanguageStandard.C17
 		expectedCompileArguments.Optimize = OptimizationLevel.None
 		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
 		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedCompileArguments.ObjectDirectory = Path.new("obj/")
 
 		var expectedTranslationUnitArguments = TranslationUnitCompileArguments.new()
-		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.cpp")
+		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
 		expectedCompileArguments.ImplementationUnits = [
@@ -151,7 +145,7 @@ class BuildTaskUnitTests {
 				],
 				Path.new("MockWorkingDirectory"),
 				[
-					Path.new("TestFile.cpp"),
+					Path.new("TestFile.c"),
 				],
 				[
 					Path.new("obj/TestFile.mock.obj"),
@@ -189,13 +183,13 @@ class BuildTaskUnitTests {
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Program"
 		buildTable["TargetType"] = BuildTargetType.Executable
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
+		buildTable["LanguageStandard"] = LanguageStandard.C17
 		buildTable["SourceRootDirectory"] = "C:/source/"
 		buildTable["TargetRootDirectory"] = "C:/target/"
 		buildTable["ObjectDirectory"] = "obj/"
 		buildTable["BinaryDirectory"] = "bin/"
 		buildTable["Source"] = [
-			"TestFile.cpp",
+			"TestFile.c",
 		]
 
 		// Setup dependencies table
@@ -221,7 +215,7 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			[
 				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Compile Operation: ./TestFile.cpp",
+				"INFO: Generate Compile Operation: ./TestFile.c",
 				"INFO: CoreLink",
 				"INFO: Linking target",
 				"INFO: Generate Link Operation: ./bin/Program.exe",
@@ -230,14 +224,14 @@ class BuildTaskUnitTests {
 			SoupTest.logs)
 
 		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
+		expectedCompileArguments.Standard = LanguageStandard.C17
 		expectedCompileArguments.Optimize = OptimizationLevel.None
 		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
 		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedCompileArguments.ObjectDirectory = Path.new("obj/")
 
 		var expectedTranslationUnitArguments = TranslationUnitCompileArguments.new()
-		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.cpp")
+		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
 		expectedCompileArguments.ImplementationUnits = [
@@ -297,7 +291,7 @@ class BuildTaskUnitTests {
 				],
 				Path.new("MockWorkingDirectory"),
 				[
-					Path.new("TestFile.cpp"),
+					Path.new("TestFile.c"),
 				],
 				[
 					Path.new("obj/TestFile.mock.obj"),
@@ -335,23 +329,19 @@ class BuildTaskUnitTests {
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Library"
 		buildTable["TargetType"] = BuildTargetType.StaticLibrary
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
+		buildTable["LanguageStandard"] = LanguageStandard.C17
 		buildTable["SourceRootDirectory"] = "C:/source/"
 		buildTable["TargetRootDirectory"] = "C:/target/"
 		buildTable["ObjectDirectory"] = "obj/"
 		buildTable["BinaryDirectory"] = "bin/"
 		buildTable["Source"] = [
-			"TestFile1.cpp",
-			"TestFile2.cpp",
-			"TestFile3.cpp",
+			"TestFile1.c",
+			"TestFile2.c",
+			"TestFile3.c",
 		]
 		buildTable["IncludeDirectories"] = [
 			"Folder",
 			"AnotherFolder/Sub",
-		]
-		buildTable["ModuleDependencies"] = [
-			"../Other/bin/OtherModule1.mock.bmi",
-			"../OtherModule2.mock.bmi",
 		]
 		buildTable["OptimizationLevel"] = BuildOptimizationLevel.None
 
@@ -378,9 +368,9 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			[
 				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Compile Operation: ./TestFile1.cpp",
-				"INFO: Generate Compile Operation: ./TestFile2.cpp",
-				"INFO: Generate Compile Operation: ./TestFile3.cpp",
+				"INFO: Generate Compile Operation: ./TestFile1.c",
+				"INFO: Generate Compile Operation: ./TestFile2.c",
+				"INFO: Generate Compile Operation: ./TestFile3.c",
 				"INFO: CoreLink",
 				"INFO: Linking target",
 				"INFO: Generate Link Operation: ./bin/Library.mock.lib",
@@ -390,7 +380,7 @@ class BuildTaskUnitTests {
 
 		// Setup the shared arguments
 		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
+		expectedCompileArguments.Standard = LanguageStandard.C17
 		expectedCompileArguments.Optimize = OptimizationLevel.None
 		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
 		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
@@ -399,24 +389,17 @@ class BuildTaskUnitTests {
 			Path.new("Folder"),
 			Path.new("AnotherFolder/Sub"),
 		]
-		expectedCompileArguments.IncludeModules = [
-			Path.new("../Other/bin/OtherModule1.mock.bmi"),
-			Path.new("../OtherModule2.mock.bmi"),
-		]
 
 		expectedCompileArguments.ImplementationUnits = [
 			TranslationUnitCompileArguments.new(
-				Path.new("TestFile1.cpp"),
-				Path.new("obj/TestFile1.mock.obj"),
-				[]),
+				Path.new("TestFile1.c"),
+				Path.new("obj/TestFile1.mock.obj")),
 			TranslationUnitCompileArguments.new(
-				Path.new("TestFile2.cpp"),
-				Path.new("obj/TestFile2.mock.obj"),
-				[]),
+				Path.new("TestFile2.c"),
+				Path.new("obj/TestFile2.mock.obj")),
 			TranslationUnitCompileArguments.new(
-				Path.new("TestFile3.cpp"),
-				Path.new("obj/TestFile3.mock.obj"),
-				[]),
+				Path.new("TestFile3.c"),
+				Path.new("obj/TestFile3.mock.obj")),
 		]
 
 		var expectedLinkArguments = LinkArguments.new()
@@ -475,7 +458,7 @@ class BuildTaskUnitTests {
 				],
 				Path.new("MockWorkingDirectory"),
 				[
-					Path.new("TestFile1.cpp"),
+					Path.new("TestFile1.c"),
 				],
 				[
 					Path.new("obj/TestFile1.mock.obj"),
@@ -488,7 +471,7 @@ class BuildTaskUnitTests {
 				],
 				Path.new("MockWorkingDirectory"),
 				[
-					Path.new("TestFile2.cpp"),
+					Path.new("TestFile2.c"),
 				],
 				[
 					Path.new("obj/TestFile2.mock.obj"),
@@ -501,707 +484,12 @@ class BuildTaskUnitTests {
 				],
 				Path.new("MockWorkingDirectory"),
 				[
-					Path.new("TestFile3.cpp"),
+					Path.new("TestFile3.c"),
 				],
 				[
 					Path.new("obj/TestFile3.mock.obj"),
 				]),
 			SoupTestOperation.new(
-				"MockLink: 1",
-				Path.new("MockLinker.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("InputFile.in"),
-				],
-				[
-					Path.new("OutputFile.out"),
-				]),
-		]
-
-		Assert.ListEqual(
-			expectedBuildOperations,
-			SoupTest.operations)
-	}
-
-	Build_Library_ModuleInterface() {
-		// Setup the input build state
-		SoupTest.initialize()
-		var activeState = SoupTest.activeState
-		var globalState = SoupTest.globalState
-
-		// Setup build table
-		var buildTable = {}
-		activeState["Build"] = buildTable
-		buildTable["Architecture"] = "x64"
-		buildTable["Compiler"] = "MOCK"
-		buildTable["TargetName"] = "Library"
-		buildTable["TargetType"] = BuildTargetType.StaticLibrary
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
-		buildTable["SourceRootDirectory"] = "C:/source/"
-		buildTable["TargetRootDirectory"] = "C:/target/"
-		buildTable["ObjectDirectory"] = "obj/"
-		buildTable["BinaryDirectory"] = "bin/"
-		buildTable["ModuleInterfaceSourceFile"] = "Public.cpp"
-		buildTable["Source"] = [
-			"TestFile1.cpp",
-			"TestFile2.cpp",
-			"TestFile3.cpp",
-		]
-		buildTable["IncludeDirectories"] = [
-			"Folder",
-			"AnotherFolder/Sub",
-		]
-		buildTable["ModuleDependencies"] = [
-			"../Other/bin/OtherModule1.mock.bmi",
-			"../OtherModule2.mock.bmi",
-		]
-		buildTable["OptimizationLevel"] = BuildOptimizationLevel.None
-		buildTable["PreprocessorDefinitions"] = [
-			"DEBUG",
-			"AWESOME",
-		]
-
-		// Setup dependencies table
-		var dependenciesTable = {}
-		globalState["Dependencies"] = dependenciesTable
-		dependenciesTable["Tool"] = {
-			"copy": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/copy.exe"
-					}
-				}
-			},
-			"mkdir": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/mkdir.exe"
-					}
-				}
-			}
-		}
-
-		// Register the mock compiler
-		var compiler = MockCompiler.new()
-		BuildTask.registerCompiler("MOCK", Fn.new { |activeState| compiler })
-
-		BuildTask.evaluate()
-
-		// Verify expected logs
-		Assert.ListEqual(
-			[
-				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Module Interface Unit Compile: ./Public.cpp",
-				"INFO: Generate Compile Operation: ./TestFile1.cpp",
-				"INFO: Generate Compile Operation: ./TestFile2.cpp",
-				"INFO: Generate Compile Operation: ./TestFile3.cpp",
-				"INFO: CoreLink",
-				"INFO: Linking target",
-				"INFO: Generate Link Operation: ./bin/Library.mock.lib",
-				"INFO: Build Generate Done",
-			],
-			SoupTest.logs)
-
-		// Setup the shared arguments
-		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
-		expectedCompileArguments.Optimize = OptimizationLevel.None
-		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
-		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedCompileArguments.ObjectDirectory = Path.new("obj/")
-		expectedCompileArguments.IncludeDirectories = [
-			Path.new("Folder"),
-			Path.new("AnotherFolder/Sub"),
-		]
-		expectedCompileArguments.IncludeModules = [
-			Path.new("../Other/bin/OtherModule1.mock.bmi"),
-			Path.new("../OtherModule2.mock.bmi"),
-		]
-		expectedCompileArguments.PreprocessorDefinitions = [
-			"DEBUG",
-			"AWESOME",
-		]
-		expectedCompileArguments.InterfaceUnit = InterfaceUnitCompileArguments.new(
-			Path.new("Public.cpp"),
-			Path.new("obj/Public.mock.obj"),
-			[],
-			Path.new("bin/Library.mock.bmi"))
-		expectedCompileArguments.ImplementationUnits = [
-			TranslationUnitCompileArguments.new(
-				Path.new("TestFile1.cpp"),
-				Path.new("obj/TestFile1.mock.obj"),
-				[]),
-			TranslationUnitCompileArguments.new(
-				Path.new("TestFile2.cpp"),
-				Path.new("obj/TestFile2.mock.obj"),
-				[]),
-			TranslationUnitCompileArguments.new(
-				Path.new("TestFile3.cpp"),
-				Path.new("obj/TestFile3.mock.obj"),
-				[]),
-		]
-
-		var expectedLinkArguments = LinkArguments.new()
-		expectedLinkArguments.TargetFile = Path.new("bin/Library.mock.lib")
-		expectedLinkArguments.TargetType = LinkTarget.StaticLibrary
-		expectedLinkArguments.TargetArchitecture = "x64"
-		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedLinkArguments.ObjectFiles = [
-			Path.new("obj/Public.mock.obj"),
-			Path.new("obj/TestFile1.mock.obj"),
-			Path.new("obj/TestFile2.mock.obj"),
-			Path.new("obj/TestFile3.mock.obj"),
-		]
-		expectedLinkArguments.LibraryFiles = []
-
-		// Verify expected compiler calls
-		Assert.ListEqual(
-			[
-				expectedCompileArguments,
-			],
-			compiler.GetCompileRequests())
-		Assert.ListEqual(
-			[
-				expectedLinkArguments,
-			],
-			compiler.GetLinkRequests())
-
-		// Verify build state
-		var expectedBuildOperations = [
-			SoupTestOperation.new(
-				"MakeDir [./obj/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./obj/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("obj/"),
-				]),
-			SoupTestOperation.new(
-				"MakeDir [./bin/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./bin/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("bin/"),
-				]),
-			SoupTestOperation.new(
-				"MockCompileModule: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("Public.cpp"),
-				],
-				[
-					Path.new("obj/Public.mock.obj"),
-					Path.new("bin/Library.mock.bmi"),
-				]),
-			SoupTestOperation.new(
-				"MockCompile: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile1.cpp"),
-				],
-				[
-					Path.new("obj/TestFile1.mock.obj"),
-				]),
-			SoupTestOperation.new(
-				"MockCompile: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile2.cpp"),
-				],
-				[
-					Path.new("obj/TestFile2.mock.obj"),
-				]),
-			SoupTestOperation.new(
-				"MockCompile: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile3.cpp"),
-				],
-				[
-					Path.new("obj/TestFile3.mock.obj"),
-				]),
-			SoupTestOperation.new(
-				"MockLink: 1",
-				Path.new("MockLinker.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("InputFile.in"),
-				],
-				[
-					Path.new("OutputFile.out"),
-				]),
-		]
-
-		Assert.ListEqual(
-			expectedBuildOperations,
-			SoupTest.operations)
-	}
-
-	Build_Library_ModuleInterface_WithPartitions() {
-		// Setup the input build state
-		SoupTest.initialize()
-		var activeState = SoupTest.activeState
-		var globalState = SoupTest.globalState
-
-		// Setup build table
-		var buildTable = {}
-		activeState["Build"] = buildTable
-		buildTable["Architecture"] = "x64"
-		buildTable["Compiler"] = "MOCK"
-		buildTable["TargetName"] = "Library"
-		buildTable["TargetType"] = BuildTargetType.StaticLibrary
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
-		buildTable["SourceRootDirectory"] = "C:/source/"
-		buildTable["TargetRootDirectory"] = "C:/target/"
-		buildTable["ObjectDirectory"] = "obj/"
-		buildTable["BinaryDirectory"] = "bin/"
-		buildTable["ModuleInterfacePartitionSourceFiles"] = [
-			{
-				"Source": "TestFile1.cpp",
-			},
-			{
-				"Source": "TestFile2.cpp",
-				"Imports": [ "TestFile1.cpp", ],
-			},
-		]
-		buildTable["ModuleInterfaceSourceFile"] = "Public.cpp"
-		buildTable["Source"] = [
-			"TestFile3.cpp",
-			"TestFile4.cpp",
-		]
-		buildTable["IncludeDirectories"] = [
-			"Folder",
-			"AnotherFolder/Sub",
-		]
-		buildTable["ModuleDependencies"] = [
-			"../Other/bin/OtherModule1.mock.bmi",
-			"../OtherModule2.mock.bmi",
-		]
-		buildTable["OptimizationLevel"] = BuildOptimizationLevel.None
-		buildTable["PreprocessorDefinitions"] = [
-			"DEBUG",
-			"AWESOME",
-		]
-
-		// Setup dependencies table
-		var dependenciesTable = {}
-		globalState["Dependencies"] = dependenciesTable
-		dependenciesTable["Tool"] = {
-			"copy": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/copy.exe"
-					}
-				}
-			},
-			"mkdir": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/mkdir.exe"
-					}
-				}
-			}
-		}
-
-		// Register the mock compiler
-		var compiler = MockCompiler.new()
-		BuildTask.registerCompiler("MOCK", Fn.new { |activeState| compiler })
-
-		BuildTask.evaluate()
-
-		// Verify expected logs
-		Assert.ListEqual(
-			[
-				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Module Interface Partition Compile Operation: ./TestFile1.cpp",
-				"INFO: Generate Module Interface Partition Compile Operation: ./TestFile2.cpp",
-				"INFO: Generate Module Interface Unit Compile: ./Public.cpp",
-				"INFO: Generate Compile Operation: ./TestFile3.cpp",
-				"INFO: Generate Compile Operation: ./TestFile4.cpp",
-				"INFO: CoreLink",
-				"INFO: Linking target",
-				"INFO: Generate Link Operation: ./bin/Library.mock.lib",
-				"INFO: Build Generate Done",
-			],
-			SoupTest.logs)
-
-		// Setup the shared arguments
-		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
-		expectedCompileArguments.Optimize = OptimizationLevel.None
-		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
-		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedCompileArguments.ObjectDirectory = Path.new("obj/")
-		expectedCompileArguments.IncludeDirectories = [
-			Path.new("Folder"),
-			Path.new("AnotherFolder/Sub"),
-		]
-		expectedCompileArguments.IncludeModules = [
-			Path.new("../Other/bin/OtherModule1.mock.bmi"),
-			Path.new("../OtherModule2.mock.bmi"),
-		]
-		expectedCompileArguments.PreprocessorDefinitions = [
-			"DEBUG",
-			"AWESOME",
-		]
-		expectedCompileArguments.InterfacePartitionUnits = [
-			InterfaceUnitCompileArguments.new(
-				Path.new("TestFile1.cpp"),
-				Path.new("obj/TestFile1.mock.obj"),
-				[],
-				Path.new("obj/TestFile1.mock.bmi")),
-			InterfaceUnitCompileArguments.new(
-				Path.new("TestFile2.cpp"),
-				Path.new("obj/TestFile2.mock.obj"),
-				[
-					Path.new("C:/target/obj/TestFile1.mock.bmi"),
-				],
-				Path.new("obj/TestFile2.mock.bmi")),
-		]
-		expectedCompileArguments.InterfaceUnit = InterfaceUnitCompileArguments.new(
-			Path.new("Public.cpp"),
-			Path.new("obj/Public.mock.obj"),
-			[
-				Path.new("C:/target/obj/TestFile1.mock.bmi"),
-				Path.new("C:/target/obj/TestFile2.mock.bmi"),
-			],
-			Path.new("bin/Library.mock.bmi"))
-		expectedCompileArguments.ImplementationUnits = [
-			TranslationUnitCompileArguments.new(
-				Path.new("TestFile3.cpp"),
-				Path.new("obj/TestFile3.mock.obj"),
-				[]),
-			TranslationUnitCompileArguments.new(
-				Path.new("TestFile4.cpp"),
-				Path.new("obj/TestFile4.mock.obj"),
-				[]),
-		]
-
-		var expectedLinkArguments = LinkArguments.new()
-		expectedLinkArguments.TargetFile = Path.new("bin/Library.mock.lib")
-		expectedLinkArguments.TargetType = LinkTarget.StaticLibrary
-		expectedLinkArguments.TargetArchitecture = "x64"
-		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedLinkArguments.ObjectFiles = [
-			Path.new("obj/TestFile1.mock.obj"),
-			Path.new("obj/TestFile2.mock.obj"),
-			Path.new("obj/Public.mock.obj"),
-			Path.new("obj/TestFile3.mock.obj"),
-			Path.new("obj/TestFile4.mock.obj"),
-		]
-		expectedLinkArguments.LibraryFiles = []
-
-		// Verify expected compiler calls
-		Assert.ListEqual(
-			[
-				expectedCompileArguments,
-			],
-			compiler.GetCompileRequests())
-		Assert.ListEqual(
-			[
-				expectedLinkArguments,
-			],
-			compiler.GetLinkRequests())
-
-		// Verify build state
-		var expectedBuildOperations = [
-			SoupTestOperation.new(
-				"MakeDir [./obj/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./obj/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("obj/"),
-				]),
-			SoupTestOperation.new(
-				"MakeDir [./bin/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./bin/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("bin/"),
-				]),
-			SoupTestOperation.new(
-				"MockCompilePartition: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile1.cpp"),
-				],
-				[
-					Path.new("obj/TestFile1.mock.obj"),
-					Path.new("obj/TestFile1.mock.bmi"),
-				]),
-			SoupTestOperation.new(
-				"MockCompilePartition: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile2.cpp"),
-				],
-				[
-					Path.new("obj/TestFile2.mock.obj"),
-					Path.new("obj/TestFile2.mock.bmi"),
-				]),
-			SoupTestOperation.new(
-				"MockCompileModule: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("Public.cpp"),
-				],
-				[
-					Path.new("obj/Public.mock.obj"),
-					Path.new("bin/Library.mock.bmi"),
-				]),
-			SoupTestOperation.new(
-				"MockCompile: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile3.cpp"),
-				],
-				[
-					Path.new("obj/TestFile3.mock.obj"),
-				]),
-			SoupTestOperation.new(
-				"MockCompile: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("TestFile4.cpp"),
-				],
-				[
-					Path.new("obj/TestFile4.mock.obj"),
-				]),
-			SoupTestOperation.new(
-				"MockLink: 1",
-				Path.new("MockLinker.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("InputFile.in"),
-				],
-				[
-					Path.new("OutputFile.out"),
-				]),
-		]
-
-		Assert.ListEqual(
-			expectedBuildOperations,
-			SoupTest.operations)
-	}
-
-	Build_Library_ModuleInterfaceNoSource() {
-		// Setup the input build state
-		SoupTest.initialize()
-		var activeState = SoupTest.activeState
-		var globalState = SoupTest.globalState
-
-		// Setup build table
-		var buildTable = {}
-		activeState["Build"] = buildTable
-		buildTable["Architecture"] = "x64"
-		buildTable["Compiler"] = "MOCK"
-		buildTable["TargetName"] = "Library"
-		buildTable["TargetType"] = BuildTargetType.StaticLibrary
-		buildTable["LanguageStandard"] = LanguageStandard.CPP20
-		buildTable["SourceRootDirectory"] = "C:/source/"
-		buildTable["TargetRootDirectory"] = "C:/target/"
-		buildTable["ObjectDirectory"] = "obj/"
-		buildTable["BinaryDirectory"] = "bin/"
-		buildTable["ModuleInterfaceSourceFile"] = "Public.cpp"
-		activeState["SourceFiles"] = []
-		buildTable["IncludeDirectories"] = [
-			"Folder",
-			"AnotherFolder/Sub",
-		]
-		buildTable["ModuleDependencies"] = [
-			"../Other/bin/OtherModule1.mock.bmi",
-			"../OtherModule2.mock.bmi",
-		]
-		buildTable["OptimizationLevel"] = BuildOptimizationLevel.None
-		buildTable["PreprocessorDefinitions"] = [
-			"DEBUG",
-			"AWESOME",
-		]
-
-		// Setup dependencies table
-		var dependenciesTable = {}
-		globalState["Dependencies"] = dependenciesTable
-		dependenciesTable["Tool"] = {
-			"copy": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/copy.exe"
-					}
-				}
-			},
-			"mkdir": {
-				"SharedState": {
-					"Build": {
-						"RunExecutable": "/TARGET/mkdir.exe"
-					}
-				}
-			}
-		}
-
-		// Register the mock compiler
-		var compiler = MockCompiler.new()
-		BuildTask.registerCompiler("MOCK", Fn.new { |activeState| compiler })
-
-		BuildTask.evaluate()
-
-		// Verify expected logs
-		Assert.ListEqual(
-			[
-				"INFO: Using Compiler: MOCK",
-				"INFO: Generate Module Interface Unit Compile: ./Public.cpp",
-				"INFO: CoreLink",
-				"INFO: Linking target",
-				"INFO: Generate Link Operation: ./bin/Library.mock.lib",
-				"INFO: Build Generate Done",
-			],
-			SoupTest.logs)
-
-		// Setup the shared arguments
-		var expectedCompileArguments = SharedCompileArguments.new()
-		expectedCompileArguments.Standard = LanguageStandard.CPP20
-		expectedCompileArguments.Optimize = OptimizationLevel.None
-		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
-		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedCompileArguments.ObjectDirectory = Path.new("./obj/")
-		expectedCompileArguments.IncludeDirectories = [
-			Path.new("Folder"),
-			Path.new("AnotherFolder/Sub"),
-		]
-		expectedCompileArguments.IncludeModules = [
-			Path.new("../Other/bin/OtherModule1.mock.bmi"),
-			Path.new("../OtherModule2.mock.bmi"),
-		]
-		expectedCompileArguments.PreprocessorDefinitions = [
-			"DEBUG",
-			"AWESOME",
-		]
-		expectedCompileArguments.InterfaceUnit = InterfaceUnitCompileArguments.new(
-			Path.new("./Public.cpp"),
-			Path.new("./obj/Public.mock.obj"),
-			[],
-			Path.new("./bin/Library.mock.bmi"))
-
-		var expectedLinkArguments = LinkArguments.new()
-		expectedLinkArguments.TargetFile = Path.new("bin/Library.mock.lib")
-		expectedLinkArguments.TargetType = LinkTarget.StaticLibrary
-		expectedLinkArguments.TargetArchitecture = "x64"
-		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
-		expectedLinkArguments.ObjectFiles = [
-			Path.new("obj/Public.mock.obj"),
-		]
-		expectedLinkArguments.LibraryFiles = []
-
-		// Verify expected compiler calls
-		Assert.ListEqual(
-			[
-				expectedCompileArguments,
-			],
-			compiler.GetCompileRequests())
-		Assert.ListEqual(
-			[
-				expectedLinkArguments,
-			],
-			compiler.GetLinkRequests())
-
-		// Verify build state
-		var expectedBuildOperations = [
-			SoupTestOperation.new(
-				"MakeDir [./obj/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./obj/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("obj/"),
-				]),
-			SoupTestOperation.new(
-				"MakeDir [./bin/]",
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./bin/",
-				],
-				Path.new("C:/target/"),
-				[],
-				[
-					Path.new("bin/"),
-				]),
-			SoupTestOperation.new(
-				"MockCompileModule: 1",
-				Path.new("MockCompiler.exe"),
-				[
-					"Arguments",
-				],
-				Path.new("MockWorkingDirectory"),
-				[
-					Path.new("Public.cpp"),
-				],
-				[
-					Path.new("obj/Public.mock.obj"),
-					Path.new("bin/Library.mock.bmi"),
-				]),
-				SoupTestOperation.new(
 				"MockLink: 1",
 				Path.new("MockLinker.exe"),
 				[

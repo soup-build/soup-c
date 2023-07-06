@@ -5,7 +5,7 @@
 import "../GCC/GCCArgumentBuilder" for GCCArgumentBuilder
 import "Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
-import "../Core/CompileArguments" for InterfaceUnitCompileArguments, LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 
 class GCCArgumentBuilderUnitTests {
 	construct new() {
@@ -13,13 +13,9 @@ class GCCArgumentBuilderUnitTests {
 
 	RunTests() {
 		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP11, "-std=c++11")
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, "-std=c11")
 		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP14, "-std=c++14")
-		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP17, "-std=c++17")
-		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard_CPP20")
-		this.BSCA_SingleArgument_LanguageStandard_CPP20()
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, "-std=c17")
 		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
 		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
@@ -34,24 +30,15 @@ class GCCArgumentBuilderUnitTests {
 		this.BSCA_SingleArgument_IncludePaths()
 		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions")
 		this.BSCA_SingleArgument_PreprocessorDefinitions()
-		System.print("GCCArgumentBuilderUnitTests.BSCA_SingleArgument_Modules")
-		this.BSCA_SingleArgument_Modules()
-		System.print("GCCArgumentBuilderUnitTests.BuildPartitionUnitCompilerArguments")
-		this.BuildPartitionUnitCompilerArguments()
-		System.print("GCCArgumentBuilderUnitTests.BuildInterfaceUnitCompilerArguments")
-		this.BuildInterfaceUnitCompilerArguments()
 		System.print("GCCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple")
 		this.BuildTranslationUnitCompilerArguments_Simple()
-		System.print("GCCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_InternalModules")
-		this.BuildTranslationUnitCompilerArguments_InternalModules()
 		System.print("GCCArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple")
 		this.BuildAssemblyUnitCompilerArguments_Simple()
 	}
 
 	// [Theory]
-	// [InlineData(LanguageStandard.CPP11, "-std=c++11")]
-	// [InlineData(LanguageStandard.CPP14, "-std=c++14")]
-	// [InlineData(LanguageStandard.CPP17, "-std=c++17")]
+	// [InlineData(LanguageStandard.C11, "-std=c11")]
+	// [InlineData(LanguageStandard.C17, "-std=c17")]
 	BSCA_SingleArgument_LanguageStandard(
 		standard,
 		expectedFlag) {
@@ -72,34 +59,16 @@ class GCCArgumentBuilderUnitTests {
 	}
 
 	// [Fact]
-	BSCA_SingleArgument_LanguageStandard_CPP20() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP20
-		arguments.Optimize = OptimizationLevel.None
-
-		var actualArguments = GCCArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"-std=c++20",
-			"-O0",
-			"-c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
 	BSCA_SingleArgument_OptimizationLevel_Disabled() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 
 		var actualArguments = GCCArgumentBuilder.BuildSharedCompilerArguments(
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-c",
 		]
@@ -114,14 +83,14 @@ class GCCArgumentBuilderUnitTests {
 		level,
 		expectedFlag) {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = level
 
 		var actualArguments = GCCArgumentBuilder.BuildSharedCompilerArguments(
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++17",
+			"-std=c17",
 			expectedFlag,
 			"-c",
 		]
@@ -132,7 +101,7 @@ class GCCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_EnableWarningsAsErrors() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.EnableWarningsAsErrors = true
 
@@ -141,7 +110,7 @@ class GCCArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-Werror",
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-c",
 		]
@@ -152,7 +121,7 @@ class GCCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_GenerateDebugInformation() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.GenerateSourceDebugInfo = true
 
@@ -161,7 +130,7 @@ class GCCArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-g",
-			"-std=c++17",
+			"-std=c17",
 			"-O0",
 			"-c",
 		]
@@ -172,7 +141,7 @@ class GCCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_IncludePaths() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.IncludeDirectories = [
 			Path.new("C:/Files/SDK/"),
@@ -183,7 +152,7 @@ class GCCArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++11",
+			"-std=c11",
 			"-O0",
 			"-I\"C:/Files/SDK/\"",
 			"-I\"./my files/\"",
@@ -196,7 +165,7 @@ class GCCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_PreprocessorDefinitions() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.PreprocessorDefinitions = [
 			"DEBUG",
@@ -207,7 +176,7 @@ class GCCArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
-			"-std=c++11",
+			"-std=c11",
 			"-O0",
 			"-DDEBUG",
 			"-DVERSION=1",
@@ -218,147 +187,24 @@ class GCCArgumentBuilderUnitTests {
 	}
 
 	// [Fact]
-	BSCA_SingleArgument_Modules() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-			Path.new("Std.pcm"),
-		]
-
-		var actualArguments = GCCArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"-std=c++11",
-			"-O0",
-			"-reference",
-			"\"./Module.pcm\"",
-			"-reference",
-			"\"./Std.pcm\"",
-			"-c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildPartitionUnitCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.ModuleInterfaceTarget = Path.new("module.ifc")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = GCCArgumentBuilder.BuildPartitionUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"./module.cpp",
-			"-o",
-			"C:/target/module.obj",
-			"-interface",
-			"-ifcOutput",
-			"\"C:/target/module.ifc\"",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildInterfaceUnitCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.ModuleInterfaceTarget = Path.new("module.ifc")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = GCCArgumentBuilder.BuildInterfaceUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"./module.cpp",
-			"-o",
-			"C:/target/module.obj",
-			"-fmodules-ts",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
 	BuildTranslationUnitCompilerArguments_Simple() {
 		var targetRootDirectory = Path.new("C:/target/")
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
+		arguments.SourceFile = Path.new("file1.c")
+		arguments.TargetFile = Path.new("file1.obj")
 
 		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = []
 
 		var actualArguments = GCCArgumentBuilder.BuildTranslationUnitCompilerArguments(
 			targetRootDirectory,
 			arguments,
-			responseFile,
-			internalModules)
+			responseFile)
 
 		var expectedArguments = [
 			"@./ResponseFile.txt",
-			"./module.cpp",
+			"./file1.c",
 			"-o",
-			"C:/target/module.obj",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildTranslationUnitCompilerArguments_InternalModules() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.IncludeModules = [
-			Path.new("Module1.ifc"),
-			Path.new("Module2.ifc"),
-		]
-
-		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = [
-			Path.new("Module3.ifc"),
-			Path.new("Module4.ifc"),
-		]
-
-		var actualArguments = GCCArgumentBuilder.BuildTranslationUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile,
-			internalModules)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"-reference",
-			"\"./Module1.ifc\"",
-			"-reference",
-			"\"./Module2.ifc\"",
-			"-reference",
-			"\"./Module3.ifc\"",
-			"-reference",
-			"\"./Module4.ifc\"",
-			"./module.cpp",
-			"-o",
-			"C:/target/module.obj",
+			"C:/target/file1.obj",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -369,8 +215,8 @@ class GCCArgumentBuilderUnitTests {
 		var targetRootDirectory = Path.new("C:/target/")
 		var sharedArguments = SharedCompileArguments.new()
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.asm")
-		arguments.TargetFile = Path.new("module.o")
+		arguments.SourceFile = Path.new("file1.asm")
+		arguments.TargetFile = Path.new("file1.o")
 
 		var actualArguments = GCCArgumentBuilder.BuildAssemblyUnitCompilerArguments(
 			targetRootDirectory,
@@ -379,11 +225,11 @@ class GCCArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-o",
-			"C:/target/module.o",
+			"C:/target/file1.o",
 			"-c",
 			"-g",
 			"-W3",
-			"./module.asm",
+			"./file1.asm",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)

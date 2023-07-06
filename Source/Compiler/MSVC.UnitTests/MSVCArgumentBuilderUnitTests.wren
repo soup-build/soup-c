@@ -5,7 +5,7 @@
 import "../MSVC/MSVCArgumentBuilder" for MSVCArgumentBuilder
 import "Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
-import "../Core/CompileArguments" for InterfaceUnitCompileArguments, LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 
 class MSVCArgumentBuilderUnitTests {
 	construct new() {
@@ -13,13 +13,9 @@ class MSVCArgumentBuilderUnitTests {
 
 	RunTests() {
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP11, "/std:c++11")
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, "/std:c11")
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP14, "/std:c++14")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
-		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.CPP17, "/std:c++17")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard_CPP20")
-		this.BSCA_SingleArgument_LanguageStandard_CPP20()
+		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, "/std:c17")
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
@@ -34,24 +30,15 @@ class MSVCArgumentBuilderUnitTests {
 		this.BSCA_SingleArgument_IncludePaths()
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions")
 		this.BSCA_SingleArgument_PreprocessorDefinitions()
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_Modules")
-		this.BSCA_SingleArgument_Modules()
-		System.print("MSVCArgumentBuilderUnitTests.BuildPartitionUnitCompilerArguments")
-		this.BuildPartitionUnitCompilerArguments()
-		System.print("MSVCArgumentBuilderUnitTests.BuildInterfaceUnitCompilerArguments")
-		this.BuildInterfaceUnitCompilerArguments()
 		System.print("MSVCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple")
 		this.BuildTranslationUnitCompilerArguments_Simple()
-		System.print("MSVCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_InternalModules")
-		this.BuildTranslationUnitCompilerArguments_InternalModules()
 		System.print("MSVCArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple")
 		this.BuildAssemblyUnitCompilerArguments_Simple()
 	}
 
 	// [Theory]
-	// [InlineData(LanguageStandard.CPP11, "/std:c++11")]
-	// [InlineData(LanguageStandard.CPP14, "/std:c++14")]
-	// [InlineData(LanguageStandard.CPP17, "/std:c++17")]
+	// [InlineData(LanguageStandard.C11, "/std:c11")]
+	// [InlineData(LanguageStandard.C17, "/std:c17")]
 	BSCA_SingleArgument_LanguageStandard(
 		standard,
 		expectedFlag) {
@@ -75,38 +62,6 @@ class MSVCArgumentBuilderUnitTests {
 			"/Od",
 			"/X",
 			"/RTC1",
-			"/EHsc",
-			"/MT",
-			"/bigobj",
-			"/c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BSCA_SingleArgument_LanguageStandard_CPP20() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP20
-		arguments.Optimize = OptimizationLevel.None
-
-		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"/nologo",
-			"/FC",
-			"/permissive-",
-			"/Zc:__cplusplus",
-			"/Zc:externConstexpr",
-			"/Zc:inline",
-			"/Zc:throwingNew",
-			"/W4",
-			"/std:c++latest",
-			"/Od",
-			"/X",
-			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
@@ -118,7 +73,7 @@ class MSVCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_OptimizationLevel_Disabled() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 
 		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
@@ -133,11 +88,10 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:inline",
 			"/Zc:throwingNew",
 			"/W4",
-			"/std:c++17",
+			"/std:c17",
 			"/Od",
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
@@ -153,7 +107,7 @@ class MSVCArgumentBuilderUnitTests {
 		level,
 		expectedFlag) {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = level
 
 		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
@@ -168,11 +122,10 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:inline",
 			"/Zc:throwingNew",
 			"/W4",
-			"/std:c++17",
+			"/std:c17",
 			expectedFlag,
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
@@ -184,7 +137,7 @@ class MSVCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_EnableWarningsAsErrors() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.EnableWarningsAsErrors = true
 
@@ -201,11 +154,10 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:throwingNew",
 			"/WX",
 			"/W4",
-			"/std:c++17",
+			"/std:c17",
 			"/Od",
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
@@ -217,7 +169,7 @@ class MSVCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_GenerateDebugInformation() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP17
+		arguments.Standard = LanguageStandard.C17
 		arguments.Optimize = OptimizationLevel.None
 		arguments.GenerateSourceDebugInfo = true
 
@@ -234,11 +186,10 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:throwingNew",
 			"/Z7",
 			"/W4",
-			"/std:c++17",
+			"/std:c17",
 			"/Od",
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MTd",
 			"/bigobj",
 			"/c",
@@ -250,7 +201,7 @@ class MSVCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_IncludePaths() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.IncludeDirectories = [
 			Path.new("C:/Files/SDK/"),
@@ -269,13 +220,12 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:inline",
 			"/Zc:throwingNew",
 			"/W4",
-			"/std:c++11",
+			"/std:c11",
 			"/Od",
 			"/I\"C:/Files/SDK/\"",
 			"/I\"./my files/\"",
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
@@ -287,7 +237,7 @@ class MSVCArgumentBuilderUnitTests {
 	// [Fact]
 	BSCA_SingleArgument_PreprocessorDefinitions() {
 		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
+		arguments.Standard = LanguageStandard.C11
 		arguments.Optimize = OptimizationLevel.None
 		arguments.PreprocessorDefinitions = [
 			"DEBUG",
@@ -306,109 +256,15 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:inline",
 			"/Zc:throwingNew",
 			"/W4",
-			"/std:c++11",
+			"/std:c11",
 			"/Od",
 			"/DDEBUG",
 			"/DVERSION=1",
 			"/X",
 			"/RTC1",
-			"/EHsc",
 			"/MT",
 			"/bigobj",
 			"/c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BSCA_SingleArgument_Modules() {
-		var arguments = SharedCompileArguments.new()
-		arguments.Standard = LanguageStandard.CPP11
-		arguments.Optimize = OptimizationLevel.None
-		arguments.IncludeModules = [
-			Path.new("Module.pcm"),
-			Path.new("Std.pcm"),
-		]
-
-		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
-			arguments)
-
-		var expectedArguments = [
-			"/nologo",
-			"/FC",
-			"/permissive-",
-			"/Zc:__cplusplus",
-			"/Zc:externConstexpr",
-			"/Zc:inline",
-			"/Zc:throwingNew",
-			"/W4",
-			"/std:c++11",
-			"/Od",
-			"/X",
-			"/RTC1",
-			"/EHsc",
-			"/MT",
-			"/reference",
-			"\"./Module.pcm\"",
-			"/reference",
-			"\"./Std.pcm\"",
-			"/bigobj",
-			"/c",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildPartitionUnitCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.ModuleInterfaceTarget = Path.new("module.ifc")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = MSVCArgumentBuilder.BuildPartitionUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"./module.cpp",
-			"/Fo\"C:/target/module.obj\"",
-			"/interface",
-			"/ifcOutput",
-			"\"C:/target/module.ifc\"",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildInterfaceUnitCompilerArguments() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = InterfaceUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.ModuleInterfaceTarget = Path.new("module.ifc")
-
-		var responseFile = Path.new("ResponseFile.txt")
-
-		var actualArguments = MSVCArgumentBuilder.BuildInterfaceUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"./module.cpp",
-			"/Fo\"C:/target/module.obj\"",
-			"/interface",
-			"/ifcOutput",
-			"\"C:/target/module.ifc\"",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -418,62 +274,20 @@ class MSVCArgumentBuilderUnitTests {
 	BuildTranslationUnitCompilerArguments_Simple() {
 		var targetRootDirectory = Path.new("C:/target/")
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
+		arguments.SourceFile = Path.new("file1.c")
+		arguments.TargetFile = Path.new("file1.obj")
 
 		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = []
 
 		var actualArguments = MSVCArgumentBuilder.BuildTranslationUnitCompilerArguments(
 			targetRootDirectory,
 			arguments,
-			responseFile,
-			internalModules)
+			responseFile)
 
 		var expectedArguments = [
 			"@./ResponseFile.txt",
-			"./module.cpp",
-			"/Fo\"C:/target/module.obj\"",
-		]
-
-		Assert.ListEqual(expectedArguments, actualArguments)
-	}
-
-	// [Fact]
-	BuildTranslationUnitCompilerArguments_InternalModules() {
-		var targetRootDirectory = Path.new("C:/target/")
-		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.cpp")
-		arguments.TargetFile = Path.new("module.obj")
-		arguments.IncludeModules = [
-			Path.new("Module1.ifc"),
-			Path.new("Module2.ifc"),
-		]
-
-		var responseFile = Path.new("ResponseFile.txt")
-		var internalModules = [
-			Path.new("Module3.ifc"),
-			Path.new("Module4.ifc"),
-		]
-
-		var actualArguments = MSVCArgumentBuilder.BuildTranslationUnitCompilerArguments(
-			targetRootDirectory,
-			arguments,
-			responseFile,
-			internalModules)
-
-		var expectedArguments = [
-			"@./ResponseFile.txt",
-			"/reference",
-			"\"./Module1.ifc\"",
-			"/reference",
-			"\"./Module2.ifc\"",
-			"/reference",
-			"\"./Module3.ifc\"",
-			"/reference",
-			"\"./Module4.ifc\"",
-			"./module.cpp",
-			"/Fo\"C:/target/module.obj\"",
+			"./file1.c",
+			"/Fo\"C:/target/file1.obj\"",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -484,8 +298,8 @@ class MSVCArgumentBuilderUnitTests {
 		var targetRootDirectory = Path.new("C:/target/")
 		var sharedArguments = SharedCompileArguments.new()
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("module.asm")
-		arguments.TargetFile = Path.new("module.obj")
+		arguments.SourceFile = Path.new("file1.asm")
+		arguments.TargetFile = Path.new("file1.obj")
 
 		var actualArguments = MSVCArgumentBuilder.BuildAssemblyUnitCompilerArguments(
 			targetRootDirectory,
@@ -494,11 +308,11 @@ class MSVCArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"/nologo",
-			"/Fo\"C:/target/module.obj\"",
+			"/Fo\"C:/target/file1.obj\"",
 			"/c",
 			"/Z7",
 			"/W3",
-			"./module.asm",
+			"./file1.asm",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)

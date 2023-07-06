@@ -7,7 +7,7 @@ import "Soup.Build.Utils:./Path" for Path
 import "Soup.Build.Utils:./Set" for Set
 import "Soup.Build.Utils:./ListExtensions" for ListExtensions
 import "Soup.Build.Utils:./MapExtensions" for MapExtensions
-import "Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel, PartitionSourceFile
+import "Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel
 import "Soup.C.Compiler:./BuildEngine" for BuildEngine
 import "Soup.C.Compiler.Clang:./ClangCompiler" for ClangCompiler
 import "Soup.C.Compiler.GCC:./GCCCompiler" for GCCCompiler
@@ -63,28 +63,6 @@ class BuildTask is SoupTask {
 
 		if (buildTable.containsKey("ResourcesFile")) {
 			arguments.ResourceFile = Path.new(buildTable["ResourcesFile"])
-		}
-
-		if (buildTable.containsKey("ModuleInterfacePartitionSourceFiles")) {
-			var paritionTargets = []
-			for (partition in buildTable["ModuleInterfacePartitionSourceFiles"]) {
-				var partitionTable = partition
-
-				var partitionImports = []
-				if (partitionTable.containsKey("Imports")) {
-					partitionImports = ListExtensions.ConvertToPathList(partitionTable["Imports"])
-				}
-
-				paritionTargets.add(PartitionSourceFile.new(
-					Path.new(partitionTable["Source"]),
-					partitionImports))
-			}
-
-			arguments.ModuleInterfacePartitionSourceFiles = paritionTargets
-		}
-
-		if (buildTable.containsKey("ModuleInterfaceSourceFile")) {
-			arguments.ModuleInterfaceSourceFile = Path.new(buildTable["ModuleInterfaceSourceFile"])
 		}
 
 		if (buildTable.containsKey("Source")) {
@@ -143,11 +121,6 @@ class BuildTask is SoupTask {
 				ListExtensions.ConvertToPathList(buildTable["LinkDependencies"]))
 		}
 
-		// Load the module references
-		if (buildTable.containsKey("ModuleDependencies")) {
-			arguments.ModuleDependencies = BuildTask.MakeUnique(ListExtensions.ConvertToPathList(buildTable["ModuleDependencies"]))
-		}
-
 		// Load the list of disabled warnings
 		if (buildTable.containsKey("EnableWarningsAsErrors")) {
 			arguments.EnableWarningsAsErrors = buildTable["EnableWarningsAsErrors"]
@@ -182,7 +155,6 @@ class BuildTask is SoupTask {
 
 		// Always pass along required input to shared build tasks
 		var sharedBuildTable = MapExtensions.EnsureTable(sharedState, "Build")
-		sharedBuildTable["ModuleDependencies"] = ListExtensions.ConvertFromPathList(buildResult.ModuleDependencies)
 		sharedBuildTable["RuntimeDependencies"] = ListExtensions.ConvertFromPathList(buildResult.RuntimeDependencies)
 		sharedBuildTable["LinkDependencies"] = ListExtensions.ConvertFromPathList(buildResult.LinkDependencies)
 

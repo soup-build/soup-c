@@ -53,35 +53,10 @@ class BuildTargetType {
 class SourceFile {
 	construct new() {
 		_file = null
-		_isModule = false
 	}
 
 	File { _file }
 	File=(value) { _file = value }
-
-	IsModule { _isModule }
-	IsModule=(value) { _isModule = value }
-}
-
-/// <summary>
-/// The partition source file definition
-/// </summary>
-class PartitionSourceFile {
-	construct new() {
-		_file = null
-		_imports = []
-	}
-
-	construct new(file, imports) {
-		_file = file
-		_imports = imports
-	}
-
-	File { _file }
-	File=(value) { _file = value }
-
-	Imports { _imports }
-	Imports=(value) { _imports = value }
 }
 
 /// <summary>
@@ -97,14 +72,11 @@ class BuildArguments {
 		_targetRootDirectory = null
 		_objectDirectory = null
 		_binaryDirectory = null
-		_moduleInterfacePartitionSourceFiles = []
-		_moduleInterfaceSourceFile = null
 		_resourceFile = null
 		_sourceFiles = []
 		_assemblySourceFiles = []
 		_publicHeaderFiles = []
 		_includeDirectories = []
-		_moduleDependencies = []
 		_platformLinkDependencies = []
 		_linkDependencies = []
 		_libraryPaths = []
@@ -167,20 +139,6 @@ class BuildArguments {
 	BinaryDirectory=(value) { _binaryDirectory = value }
 
 	/// <summary>
-	/// Gets or sets the list of module interface partition source files
-	/// Note: These files can be plain old translation units 
-	/// or they can be module implementation units
-	/// </summary>
-	ModuleInterfacePartitionSourceFiles { _moduleInterfacePartitionSourceFiles }
-	ModuleInterfacePartitionSourceFiles=(value) { _moduleInterfacePartitionSourceFiles = value }
-
-	/// <summary>
-	/// Gets or sets the single module interface source file
-	/// </summary>
-	ModuleInterfaceSourceFile { _moduleInterfaceSourceFile }
-	ModuleInterfaceSourceFile=(value) { _moduleInterfaceSourceFile = value }
-
-	/// <summary>
 	/// Gets or sets the MSVC Resrouce file
 	/// TODO: Abstract for multi-compiler/platform support
 	/// </summary>
@@ -189,8 +147,6 @@ class BuildArguments {
 
 	/// <summary>
 	/// Gets or sets the list of source files
-	/// Note: These files can be plain old translation units 
-	/// or they can be module implementation units
 	/// </summary>
 	SourceFiles { _sourceFiles }
 	SourceFiles=(value) { _sourceFiles = value }
@@ -212,12 +168,6 @@ class BuildArguments {
 	/// </summary>
 	IncludeDirectories { _includeDirectories }
 	IncludeDirectories=(value) { _includeDirectories = value }
-
-	/// <summary>
-	/// Gets or sets the list of module dependencies
-	/// </summary>
-	ModuleDependencies { _moduleDependencies }
-	ModuleDependencies=(value) { _moduleDependencies = value }
 
 	/// <summary>
 	/// Gets or sets the list of platform link libraries

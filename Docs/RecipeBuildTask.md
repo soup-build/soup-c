@@ -23,14 +23,12 @@ This task reads in the global state Recipe to translate the declared build into 
     * **IncludePaths** - Allow for direct references to include paths.
     * **Defines** - Allow for manual creation of global macro definitions.
     * **Resources** - List of resource files to be compiled.
-    * **Partitions** - Module Partition Units that will have explicit dependencies defined.
-    * **Interface** - The single Module Interface Unit that exposes all shared symbols to downstream dependencies.
     * **Source** - The list of plain old Translation Units to compile.
     * **AssemblySource** - The list of assembly source files to compile.
     * **PublicHeaders** - The list of public header files that will be shared with downstream dependencies includes.
     * **EnableWarningsAsErrors** - A flag that enables warnings as errors. Default to true.
     * **Type** - The type of the package, Can be StaticLibrary, DynamicLibrary, Executable or WindowsApplication (TODO: Can this be removed?). Default is StaticLibrary.
-    * **LanguageVersion** - The C++ Language Version, Default is C++20.
+    * **LanguageVersion** - The C Language Version, Default is C17.
 
 ## Output
 * Active State

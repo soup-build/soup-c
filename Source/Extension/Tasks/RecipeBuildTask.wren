@@ -151,40 +151,6 @@ class RecipeBuildTask is SoupTask {
 			resourcesFile = resourcesFilePath.toString
 		}
 
-		// Load the module interface partition files if present
-		var moduleInterfacePartitionSourceFiles = []
-		if (recipe.containsKey("Partitions")) {
-			for (partition in recipe["Partitions"]) {
-				var targetPartitionTable = {}
-				if (partition is String) {
-					targetPartitionTable["Source"] = partition
-				} else if (partition is Map) {
-					var partitionTable = partition
-					if (partitionTable.containsKey("Source")) {
-						targetPartitionTable["Source"] = partitionTable["Source"]
-					} else {
-						Fiber.abort("Partition table missing Source")
-					}
-
-					if (partitionTable.containsKey("Imports")) {
-						var partitionImports = partitionTable["Imports"]
-						targetPartitionTable["Imports"] = partitionImports
-					}
-				} else {
-					Fiber.abort("Unknown partition type.")
-				}
-
-				moduleInterfacePartitionSourceFiles.add(targetPartitionTable)
-			}
-		}
-
-		// Load the module interface file if present
-		var moduleInterfaceSourceFile
-		if (recipe.containsKey("Interface")) {
-			var moduleInterfaceSourceFilePath = Path.new(recipe["Interface"])
-			moduleInterfaceSourceFile = moduleInterfaceSourceFilePath.toString
-		}
-
 		// Load the source files if present
 		var sourceFiles = []
 		if (recipe.containsKey("Source")) {
@@ -237,12 +203,6 @@ class RecipeBuildTask is SoupTask {
 		if (!(resourcesFile is Null)) {
 			build["ResourcesFile"] = resourcesFile
 		}
-		ListExtensions.Append(
-			MapExtensions.EnsureList(build, "ModuleInterfacePartitionSourceFiles"),
-			moduleInterfacePartitionSourceFiles)
-		if (!(moduleInterfaceSourceFile is Null)) {
-			build["ModuleInterfaceSourceFile"] = moduleInterfaceSourceFile
-		}
 		build["OptimizationLevel"] = optimizationLevel
 		build["GenerateSourceDebugInfo"] = generateSourceDebugInfo
 
@@ -283,7 +243,7 @@ class RecipeBuildTask is SoupTask {
 		build["TargetType"] = targetType
 
 		// Convert the recipe language version to the required build language
-		var languageStandard = LanguageStandard.CPP20
+		var languageStandard = LanguageStandard.C17
 		if (recipe.containsKey("LanguageVersion")) {
 			languageStandard = RecipeBuildTask.ParseLanguageStandard(recipe["LanguageVersion"])
 		}
@@ -306,14 +266,10 @@ class RecipeBuildTask is SoupTask {
 	}
 
 	static ParseLanguageStandard(value) {
-		if (value == "C++11") {
-			return LanguageStandard.CPP11
-		} else if (value == "C++14") {
-			return LanguageStandard.CPP14
-		} else if (value == "C++17") {
-			return LanguageStandard.CPP17
-		} else if (value == "C++20") {
-			return LanguageStandard.CPP20
+		if (value == "C11") {
+			return LanguageStandard.C11
+		} else if (value == "C17") {
+			return LanguageStandard.C17
 		} else {
 			Fiber.abort("Unknown recipe language standard value.")
 		}
