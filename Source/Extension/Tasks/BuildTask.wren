@@ -3,15 +3,15 @@
 // </copyright>
 
 import "soup" for Soup, SoupTask
-import "Soup.Build.Utils:./Path" for Path
-import "Soup.Build.Utils:./Set" for Set
-import "Soup.Build.Utils:./ListExtensions" for ListExtensions
-import "Soup.Build.Utils:./MapExtensions" for MapExtensions
-import "Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel
-import "Soup.C.Compiler:./BuildEngine" for BuildEngine
-import "Soup.C.Compiler.Clang:./ClangCompiler" for ClangCompiler
-import "Soup.C.Compiler.GCC:./GCCCompiler" for GCCCompiler
-import "Soup.C.Compiler.MSVC:./MSVCCompiler" for MSVCCompiler
+import "mwasplund|Soup.Build.Utils:./Path" for Path
+import "mwasplund|Soup.Build.Utils:./Set" for Set
+import "mwasplund|Soup.Build.Utils:./ListExtensions" for ListExtensions
+import "mwasplund|Soup.Build.Utils:./MapExtensions" for MapExtensions
+import "mwasplund|Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel
+import "mwasplund|Soup.C.Compiler:./BuildEngine" for BuildEngine
+import "mwasplund|Soup.C.Compiler.Clang:./ClangCompiler" for ClangCompiler
+import "mwasplund|Soup.C.Compiler.GCC:./GCCCompiler" for GCCCompiler
+import "mwasplund|Soup.C.Compiler.MSVC:./MSVCCompiler" for MSVCCompiler
 
 class BuildTask is SoupTask {
 	/// <summary>

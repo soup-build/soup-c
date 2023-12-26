@@ -3,9 +3,9 @@
 // </copyright>
 
 import "../Clang/ClangCompiler" for ClangCompiler
-import "Soup.Build.Utils:./Path" for Path
+import "mwasplund|Soup.Build.Utils:./Path" for Path
 import "../../Test/Assert" for Assert
-import "Soup.Build.Utils:./BuildOperation" for BuildOperation
+import "mwasplund|Soup.Build.Utils:./BuildOperation" for BuildOperation
 import "../Core/LinkArguments" for LinkArguments, LinkTarget
 import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
 
