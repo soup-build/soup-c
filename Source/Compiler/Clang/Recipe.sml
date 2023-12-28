@@ -1,14 +1,14 @@
-Name: "Soup.C.Compiler.Clang"
-Language: "Wren|0"
-Version: "0.2.0"
+Name: 'Soup.C.Compiler.Clang'
+Language: 'Wren|0'
+Version: '0.3.0'
 Source: [
-	"ClangArgumentBuilder.wren"
-	"ClangCompiler.wren"
+	'ClangArgumentBuilder.wren'
+	'ClangCompiler.wren'
 ]
 
 Dependencies: {
 	Runtime: [
-		"Soup.C.Compiler@0"
-		"Soup.Build.Utils@0"
+		'Soup.C.Compiler@0'
+		'Soup.Build.Utils@0'
 	]
 }
