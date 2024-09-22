@@ -245,7 +245,7 @@ class RecipeBuildTask is SoupTask {
 		build["TargetType"] = targetType
 
 		// Convert the recipe language version to the required build language
-		var languageStandard = LanguageStandard.CPP20
+		var languageStandard = LanguageStandard.C17
 		if (recipe.containsKey("LanguageVersion")) {
 			languageStandard = RecipeBuildTask.ParseLanguageStandard(recipe["LanguageVersion"])
 		}

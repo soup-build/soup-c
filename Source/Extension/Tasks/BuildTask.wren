@@ -7,7 +7,7 @@ import "mwasplund|Soup.Build.Utils:./Path" for Path
 import "mwasplund|Soup.Build.Utils:./Set" for Set
 import "mwasplund|Soup.Build.Utils:./ListExtensions" for ListExtensions
 import "mwasplund|Soup.Build.Utils:./MapExtensions" for MapExtensions
-import "mwasplund|Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel
+import "mwasplund|Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
 import "mwasplund|Soup.C.Compiler:./BuildEngine" for BuildEngine
 import "mwasplund|Soup.C.Compiler.Clang:./ClangCompiler" for ClangCompiler
 import "mwasplund|Soup.C.Compiler.GCC:./GCCCompiler" for GCCCompiler
@@ -202,7 +202,7 @@ class BuildTask is SoupTask {
 		return Fn.new { |activeState|
 			Soup.info("%(activeState)")
 			var clang = activeState["Clang"]
-			var clangToolPath = Path.new(clang["CppCompiler"])
+			var clangToolPath = Path.new(clang["CCompiler"])
 			var archiveToolPath = Path.new(clang["Archiver"])
 			return ClangCompiler.new(
 				clangToolPath,
@@ -213,7 +213,7 @@ class BuildTask is SoupTask {
 	static createGCCCompiler {
 		return Fn.new { |activeState|
 			var gcc = activeState["GCC"]
-			var gccToolPath = Path.new(gcc["CppCompiler"])
+			var gccToolPath = Path.new(gcc["CCompiler"])
 			return GCCCompiler.new(
 				gccToolPath)
 		}
