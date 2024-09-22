@@ -7,7 +7,7 @@ import "mwasplund|Soup.Build.Utils:./Path" for Path
 import "mwasplund|Soup.Build.Utils:./Set" for Set
 import "mwasplund|Soup.Build.Utils:./ListExtensions" for ListExtensions
 import "mwasplund|Soup.Build.Utils:./MapExtensions" for MapExtensions
-import "mwasplund|Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel
+import "mwasplund|Soup.C.Compiler:./BuildArguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
 import "mwasplund|Soup.C.Compiler:./BuildEngine" for BuildEngine
 import "mwasplund|Soup.C.Compiler.Clang:./ClangCompiler" for ClangCompiler
 import "mwasplund|Soup.C.Compiler.GCC:./GCCCompiler" for GCCCompiler
@@ -29,6 +29,9 @@ class BuildTask is SoupTask {
 		__compilerFactory[name] = factory
 	}
 
+	/// <summary>
+	/// The Core Execute task
+	/// </summary>
 	static evaluate() {
 		// Register default compilers
 		BuildTask.registerCompiler("Clang", BuildTask.createClangCompiler)
@@ -73,8 +76,21 @@ class BuildTask is SoupTask {
 			arguments.AssemblySourceFiles = ListExtensions.ConvertToPathList(buildTable["AssemblySource"])
 		}
 
-		if (buildTable.containsKey("PublicHeaders")) {
-			arguments.PublicHeaderFiles = ListExtensions.ConvertToPathList(buildTable["PublicHeaders"])
+		if (buildTable.containsKey("PublicHeaderSets")) {
+			var publicHeaderSets = []
+			for (value in buildTable["PublicHeaderSets"]) {
+				var root = Path.new(value["Root"].toString)
+				var target = null
+				var files = ListExtensions.ConvertToPathList(value["Files"])
+
+				if (value.containsKey("Target")) {
+					target = Path.new(value["Target"].toString)
+				}
+
+				publicHeaderSets.add(HeaderFileSet.new(root, target, files))
+			}
+
+			arguments.PublicHeaderSets = publicHeaderSets
 		}
 
 		if (buildTable.containsKey("IncludeDirectories")) {
@@ -184,9 +200,10 @@ class BuildTask is SoupTask {
 
 	static createClangCompiler {
 		return Fn.new { |activeState|
+			Soup.info("%(activeState)")
 			var clang = activeState["Clang"]
-			var clangToolPath = Path.new("/usr/bin/clang++-17")
-			var archiveToolPath = Path.new("/usr/bin/ar")
+			var clangToolPath = Path.new(clang["CCompiler"])
+			var archiveToolPath = Path.new(clang["Archiver"])
 			return ClangCompiler.new(
 				clangToolPath,
 				archiveToolPath)
@@ -196,17 +213,9 @@ class BuildTask is SoupTask {
 	static createGCCCompiler {
 		return Fn.new { |activeState|
 			var gcc = activeState["GCC"]
-			var clToolPath = Path.new("/usr/bin/g++-12")
-			var linkToolPath = Path.new("/usr/bin/g++-12")
-			var libToolPath = Path.new("")
-			var rcToolPath = Path.new("")
-			var mlToolPath = Path.new("")
+			var gccToolPath = Path.new(gcc["CCompiler"])
 			return GCCCompiler.new(
-				clToolPath,
-				linkToolPath,
-				libToolPath,
-				rcToolPath,
-				mlToolPath)
+				gccToolPath)
 		}
 	}
 

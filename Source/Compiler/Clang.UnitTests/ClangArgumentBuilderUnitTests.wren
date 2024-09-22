@@ -218,7 +218,7 @@ class ClangArgumentBuilderUnitTests {
 	BuildTranslationUnitCompilerArguments_Simple() {
 		var targetRootDirectory = Path.new("C:/target/")
 		var arguments = TranslationUnitCompileArguments.new()
-		arguments.SourceFile = Path.new("file1.cpp")
+		arguments.SourceFile = Path.new("file1.c")
 		arguments.TargetFile = Path.new("file1.o")
 
 		var responseFile = Path.new("ResponseFile.txt")
@@ -230,7 +230,7 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"@./ResponseFile.txt",
-			"./file1.cpp",
+			"./file1.c",
 			"-o",
 			"C:/target/file1.o",
 		]

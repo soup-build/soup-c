@@ -55,6 +55,9 @@ class ClangArgumentBuilder {
 			ClangArgumentBuilder.AddFlagValue(commandArguments, "w", warning)
 		}
 
+		// Convert absolute addresses to relative addresses
+		ClangArgumentBuilder.AddFlag(commandArguments, "fpic")
+		
 		// Set the language standard
 		if (arguments.Standard == LanguageStandard.C11) {
 			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c11")
@@ -91,7 +94,7 @@ class ClangArgumentBuilder {
 		ClangArgumentBuilder.AddFlag(commandArguments, "maes")
 		ClangArgumentBuilder.AddFlag(commandArguments, "msse4.1")
 		ClangArgumentBuilder.AddFlag(commandArguments, "msha")
-
+		
 		// Only run preprocessor, compile and assemble
 		ClangArgumentBuilder.AddFlag(commandArguments, ClangArgumentBuilder.Compiler_ArgumentFlag_CompileOnly)
 
@@ -206,6 +209,12 @@ class ClangArgumentBuilder {
 			commandArguments,
 			arguments.TargetFile.toString)
 
+		// Add the object files
+		for (file in arguments.ObjectFiles) {
+			// Add the object files as input
+			commandArguments.add(file.toString)
+		}
+
 		// Add the library files
 		for (file in arguments.LibraryFiles) {
 			// Add the library files as input
@@ -220,12 +229,6 @@ class ClangArgumentBuilder {
 				commandArguments,
 				ClangArgumentBuilder.Linker_ArgumentParameter_DefaultLibrary,
 				file.toString)
-		}
-
-		// Add the object files
-		for (file in arguments.ObjectFiles) {
-			// Add the object files as input
-			commandArguments.add(file.toString)
 		}
 
 		return commandArguments
@@ -282,10 +285,6 @@ class ClangArgumentBuilder {
 
 	static AddValue(arguments, value) {
 		arguments.add("%(value)")
-	}
-
-	static AddValueWithQuotes(arguments, value) {
-		arguments.add("\"%(value)\"")
 	}
 
 	static AddFlag(arguments, flag) {
