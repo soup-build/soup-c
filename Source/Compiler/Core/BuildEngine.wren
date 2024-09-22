@@ -163,6 +163,36 @@ class BuildEngine {
 		linkArguments.LibraryPaths = arguments.LibraryPaths
 		linkArguments.GenerateSourceDebugInfo = arguments.GenerateSourceDebugInfo
 
+		// Build up the set of object files
+		var objectFiles = []
+
+		// Add the resource file if present
+		if (!(arguments.ResourceFile is Null)) {
+			var compiledResourceFile =
+				arguments.ObjectDirectory +
+				Path.new(arguments.ResourceFile.GetFileName())
+			compiledResourceFile.SetFileExtension(_compiler.ResourceFileExtension)
+
+			objectFiles.add(compiledResourceFile)
+		}
+
+		// Add the implementation unit object files
+		for (sourceFile in arguments.SourceFiles) {
+			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
+			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
+			objectFiles.add(objectFile)
+		}
+
+		// Add the assembly unit object files
+		for (sourceFile in arguments.AssemblySourceFiles) {
+			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
+			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
+			objectFiles.add(objectFile)
+		}
+
+		linkArguments.ObjectFiles = objectFiles
+
+
 		// Only resolve link libraries if not a library ourself
 		if (arguments.TargetType != BuildTargetType.StaticLibrary) {
 			linkArguments.ExternalLibraryFiles = arguments.PlatformLinkDependencies
@@ -177,10 +207,14 @@ class BuildEngine {
 			// Add the library as a link dependency and all recursive libraries
 			// Ensure we link this library before the other dependencies
 			result.LinkDependencies = [] + arguments.LinkDependencies
-			var absoluteTargetFile = linkArguments.TargetFile.HasRoot ?
-				linkArguments.TargetFile :
-				linkArguments.TargetRootDirectory + linkArguments.TargetFile
-			result.LinkDependencies.insert(0, absoluteTargetFile)
+			if (objectFiles.count != 0) { 
+				var absoluteTargetFile = linkArguments.TargetFile.HasRoot ?
+					linkArguments.TargetFile :
+					linkArguments.TargetRootDirectory + linkArguments.TargetFile
+				result.LinkDependencies.insert(0, absoluteTargetFile)
+			} else {
+				Soup.info("Skipping link dependency target with no object files")
+			}
 		} else if (arguments.TargetType == BuildTargetType.DynamicLibrary) {
 			linkArguments.TargetType = LinkTarget.DynamicLibrary
 
@@ -230,35 +264,6 @@ class BuildEngine {
 			Fiber.abort("Unknown build target type.")
 		}
 
-		// Build up the set of object files
-		var objectFiles = []
-
-		// Add the resource file if present
-		if (!(arguments.ResourceFile is Null)) {
-			var compiledResourceFile =
-				arguments.ObjectDirectory +
-				Path.new(arguments.ResourceFile.GetFileName())
-			compiledResourceFile.SetFileExtension(_compiler.ResourceFileExtension)
-
-			objectFiles.add(compiledResourceFile)
-		}
-
-		// Add the implementation unit object files
-		for (sourceFile in arguments.SourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
-			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
-			objectFiles.add(objectFile)
-		}
-
-		// Add the assembly unit object files
-		for (sourceFile in arguments.AssemblySourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
-			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
-			objectFiles.add(objectFile)
-		}
-
-		linkArguments.ObjectFiles = objectFiles
-
 		// Perform the link
 		Soup.info("Generate Link Operation: %(linkArguments.TargetFile)")
 		var linkOperation = _compiler.CreateLinkOperation(linkArguments)
@@ -302,18 +307,36 @@ class BuildEngine {
 	/// Copy public headers
 	/// </summary>
 	CopyPublicHeaders(arguments, result) {
-		if (arguments.PublicHeaderFiles.count > 0) {
+		if (arguments.PublicHeaderSets.count > 0) {
 			Soup.info("Setup Public Headers")
 			var includeDirectory = Path.new("include/")
 
 			// Pass along the output include folder
 			result.PublicInclude = arguments.TargetRootDirectory + includeDirectory
 
-			// Discover all unique sub folders
 			var folderSet = Set.new()
 			folderSet.add(includeDirectory)
-			for (file in arguments.PublicHeaderFiles) {
-				folderSet.add(includeDirectory + file.GetParent())
+
+			for (fileSet in arguments.PublicHeaderSets) {
+				Soup.info("Copy Header Set: %(fileSet.Root)")
+				var includeSetDirectory = includeDirectory
+				if (!(fileSet.Target is Null)) {
+					includeSetDirectory = includeSetDirectory + fileSet.Target
+				}
+
+				for (file in fileSet.Files) {
+					// Track all unique sub folders
+					folderSet.add(includeSetDirectory + file.GetParent())
+					
+					// Copy the script files to the output
+					Soup.info("Generate Copy Header: %(file)")
+					var operation = SharedOperations.CreateCopyFileOperation(
+							arguments.TargetRootDirectory,
+							arguments.SourceRootDirectory + fileSet.Root + file,
+							includeSetDirectory + file)
+							
+						result.BuildOperations.add(operation)
+				}
 			}
 
 			// Ensure the output directories exists
@@ -323,17 +346,13 @@ class BuildEngine {
 						arguments.TargetRootDirectory,
 						folder))
 			}
+		}
+	}
 
-			// Copy the script files to the output
-			for (file in arguments.PublicHeaderFiles) {
-				Soup.info("Generate Copy Header: %(file)")
-				var operation = SharedOperations.CreateCopyFileOperation(
-						arguments.TargetRootDirectory,
-						arguments.SourceRootDirectory + file,
-						includeDirectory + file)
-						
-					result.BuildOperations.add(operation)
-			}
+	BuildClosure(closure, file, partitionInterfaceDependencyLookup) {
+		for (childFile in partitionInterfaceDependencyLookup[file.toString]) {
+			closure.add(childFile)
+			this.BuildClosure(closure, childFile, partitionInterfaceDependencyLookup)
 		}
 	}
 

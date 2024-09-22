@@ -43,6 +43,7 @@ class RecipeBuildTask is SoupTask {
 
 		// Load the input properties
 		var compiler = build["Compiler"]
+		var system = build["System"]
 		var packageRoot = Path.new(context["PackageDirectory"])
 		var flavor = build["Flavor"]
 
@@ -152,7 +153,7 @@ class RecipeBuildTask is SoupTask {
 		}
 
 		// Load the source files if present
-		var sourceFiles = []
+		var sourceFiles = null
 		if (recipe.containsKey("Source")) {
 			sourceFiles = recipe["Source"]
 		}
@@ -160,13 +161,13 @@ class RecipeBuildTask is SoupTask {
 		// Load the assembly source files if present
 		var assemblySourceFiles = []
 		if (recipe.containsKey("AssemblySource")) {
-			assemblySourceFiles = recipe["AssemblySource"]
+			assemblySourceFiles = RecipeBuildTask.ParseSourceFiles(recipe["AssemblySource"], system)
 		}
 
 		// Load the public header files if present
-		var publicHeaderFiles = []
+		var publicHeaderSets = []
 		if (recipe.containsKey("PublicHeaders")) {
-			publicHeaderFiles = recipe["PublicHeaders"]
+			publicHeaderSets = recipe["PublicHeaders"]
 		}
 
 		// Check for warning settings
@@ -206,7 +207,6 @@ class RecipeBuildTask is SoupTask {
 		build["OptimizationLevel"] = optimizationLevel
 		build["GenerateSourceDebugInfo"] = generateSourceDebugInfo
 
-
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "PlatformLibraries"),
 			ListExtensions.ConvertFromPathList(platformLibraries))
@@ -222,15 +222,17 @@ class RecipeBuildTask is SoupTask {
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "LibraryPaths"),
 			ListExtensions.ConvertFromPathList(libraryPaths))
-		ListExtensions.Append(
-			MapExtensions.EnsureList(build, "Source"),
-			sourceFiles)
+		if (sourceFiles != null) {
+			ListExtensions.Append(
+				MapExtensions.EnsureList(build, "Source"),
+				sourceFiles)
+		}
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "AssemblySource"),
 			assemblySourceFiles)
 		ListExtensions.Append(
-			MapExtensions.EnsureList(build, "PublicHeaders"),
-			publicHeaderFiles)
+			MapExtensions.EnsureList(build, "PublicHeaderSets"),
+			publicHeaderSets)
 
 		build["EnableWarningsAsErrors"] = enableWarningsAsErrors
 
@@ -243,12 +245,46 @@ class RecipeBuildTask is SoupTask {
 		build["TargetType"] = targetType
 
 		// Convert the recipe language version to the required build language
-		var languageStandard = LanguageStandard.C17
+		var languageStandard = LanguageStandard.CPP20
 		if (recipe.containsKey("LanguageVersion")) {
 			languageStandard = RecipeBuildTask.ParseLanguageStandard(recipe["LanguageVersion"])
 		}
 
 		build["LanguageStandard"] = languageStandard
+	}
+
+	static ParseSourceFiles(files, system) {
+		var result = []
+		for (file in files) {
+			if (file is String) {
+				result.add(file)
+			} else if (file is Map) {
+				if (!file.containsKey("Filter")) {
+					Fiber.abort("File group must have Filter.")
+				}
+				
+				if (!file.containsKey("Files")) {
+					Fiber.abort("File group must have Files.")
+				}
+
+				var isIncluded = true
+
+				var filter = file["Filter"]
+				if (filter.containsKey("System")) {
+					if (system != filter["System"]) {
+						isIncluded = false
+					}
+				}
+
+				if (isIncluded) {
+					ListExtensions.Append(result, file["Files"])
+				}
+			} else {
+				Fiber.abort("Unknown file type.")
+			}
+		}
+
+		return result
 	}
 
 	static ParseType(value) {

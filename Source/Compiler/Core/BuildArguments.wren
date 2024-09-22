@@ -53,10 +53,40 @@ class BuildTargetType {
 class SourceFile {
 	construct new() {
 		_file = null
+		_isModule = false
 	}
 
 	File { _file }
 	File=(value) { _file = value }
+
+	IsModule { _isModule }
+	IsModule=(value) { _isModule = value }
+}
+
+/// <summary>
+/// The header file set
+/// </summary>
+class HeaderFileSet {
+	construct new() {
+		_root = null
+		_target = null
+		_files = []
+	}
+
+	construct new(root, target, files) {
+		_root = root
+		_target = target
+		_files = files
+	}
+
+	Root { _root }
+	Root=(value) { _root = value }
+
+	Target { _target }
+	Target=(value) { _target = value }
+
+	Files { _files }
+	Files=(value) { _files = value }
 }
 
 /// <summary>
@@ -75,7 +105,7 @@ class BuildArguments {
 		_resourceFile = null
 		_sourceFiles = []
 		_assemblySourceFiles = []
-		_publicHeaderFiles = []
+		_publicHeaderSets = []
 		_includeDirectories = []
 		_platformLinkDependencies = []
 		_linkDependencies = []
@@ -158,10 +188,10 @@ class BuildArguments {
 	AssemblySourceFiles=(value) { _assemblySourceFiles = value }
 
 	/// <summary>
-	/// Gets or sets the list of public headers files
+	/// Gets or sets the list of public headers file sets
 	/// </summary>
-	PublicHeaderFiles { _publicHeaderFiles }
-	PublicHeaderFiles=(value) { _publicHeaderFiles = value }
+	PublicHeaderSets { _publicHeaderSets }
+	PublicHeaderSets=(value) { _publicHeaderSets = value }
 
 	/// <summary>
 	/// Gets or sets the list of include directories

@@ -1,8 +1,9 @@
 Name: 'Soup.C'
 Language: 'Wren|0'
-Version: '0.3.0'
+Version: '0.4.0'
 Source: [
 	'Tasks/BuildTask.wren'
+	'Tasks/ExpandSourceTask.wren'
 	'Tasks/InitializeDefaultsTask.wren'
 	'Tasks/RecipeBuildTask.wren'
 	'Tasks/ResolveDependenciesTask.wren'
