@@ -302,7 +302,11 @@ class RecipeBuildTask is SoupTask {
 	}
 
 	static ParseLanguageStandard(value) {
-		if (value == "C11") {
+		if (value == "C89") {
+			return LanguageStandard.C89
+		} else if (value == "C99") {
+			return LanguageStandard.C99
+		} else if (value == "C11") {
 			return LanguageStandard.C11
 		} else if (value == "C17") {
 			return LanguageStandard.C17
