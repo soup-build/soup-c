@@ -1,6 +1,6 @@
 Name: 'Soup.C.Compiler.GCC'
 Language: 'Wren|0'
-Version: '0.4.0'
+Version: '0.4.1'
 Source: [
 	'GCCArgumentBuilder.wren'
 	'GCCCompiler.wren'

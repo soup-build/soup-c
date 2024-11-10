@@ -59,7 +59,11 @@ class ClangArgumentBuilder {
 		ClangArgumentBuilder.AddFlag(commandArguments, "fpic")
 		
 		// Set the language standard
-		if (arguments.Standard == LanguageStandard.C11) {
+		if (arguments.Standard == LanguageStandard.C89) {
+			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c89")
+		} else if (arguments.Standard == LanguageStandard.C99) {
+			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c99")
+		} else if (arguments.Standard == LanguageStandard.C11) {
 			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c11")
 		} else if (arguments.Standard == LanguageStandard.C17) {
 			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c17")
