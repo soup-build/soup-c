@@ -1,4 +1,4 @@
-Name: 'Soup.C'
+Name: 'C'
 Language: 'Wren|0'
 Version: '0.4.1'
 Source: [
