@@ -10,6 +10,16 @@ import "mwasplund|Soup.Build.Utils:./MapExtensions" for MapExtensions
 /// </summary>
 class LanguageStandard {
 	/// <summary>
+	/// C 89
+	/// </summary>
+	static C89 { "C89" }
+
+	/// <summary>
+	/// C 99
+	/// </summary>
+	static C99 { "C99" }
+
+	/// <summary>
 	/// C 11
 	/// </summary>
 	static C11 { "C11" }

@@ -53,7 +53,11 @@ class GCCArgumentBuilder {
 		}
 
 		// Set the language standard
-		if (arguments.Standard == LanguageStandard.C11) {
+		if (arguments.Standard == LanguageStandard.C89) {
+			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c89")
+		} else if (arguments.Standard == LanguageStandard.C99) {
+			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c99")
+		} else if (arguments.Standard == LanguageStandard.C11) {
 			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c11")
 		} else if (arguments.Standard == LanguageStandard.C17) {
 			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c17")

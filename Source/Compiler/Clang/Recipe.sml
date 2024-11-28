@@ -1,6 +1,6 @@
 Name: 'Soup.C.Compiler.Clang'
 Language: 'Wren|0'
-Version: '0.4.0'
+Version: '0.4.1'
 Source: [
 	'ClangArgumentBuilder.wren'
 	'ClangCompiler.wren'
