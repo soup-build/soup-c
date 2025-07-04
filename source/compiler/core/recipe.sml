@@ -1,4 +1,4 @@
-Name: 'Soup.C.Compiler'
+Name: 'C.Compiler'
 Language: 'Wren|0'
 Version: 0.5.0
 Source: [
@@ -12,6 +12,6 @@ Source: [
 ]
 Dependencies: {
 	Runtime: [
-		'Soup.Build.Utils@0'
+		'Soup|Build.Utils@0'
 	]
 }

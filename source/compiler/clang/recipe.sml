@@ -5,7 +5,6 @@ Source: [
 	'clang-argument-builder.wren'
 	'clang-compiler.wren'
 ]
-
 Dependencies: {
 	Runtime: [
 		'Soup|C.Compiler@0'
