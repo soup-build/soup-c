@@ -3,15 +3,15 @@
 // </copyright>
 
 import "soup" for Soup, SoupTask
-import "mwasplund|Soup.Build.Utils:./path" for Path
-import "mwasplund|Soup.Build.Utils:./set" for Set
-import "mwasplund|Soup.Build.Utils:./list-extensions" for ListExtensions
-import "mwasplund|Soup.Build.Utils:./map-extensions" for MapExtensions
-import "mwasplund|Soup.C.Compiler:./build-arguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
-import "mwasplund|Soup.C.Compiler:./build-engine" for BuildEngine
-import "mwasplund|Soup.C.Compiler.Clang:./clang-compiler" for ClangCompiler
-import "mwasplund|Soup.C.Compiler.GCC:./gcc-compiler" for GCCCompiler
-import "mwasplund|Soup.C.Compiler.MSVC:./msvc-compiler" for MSVCCompiler
+import "Soup|Build.Utils:./path" for Path
+import "Soup|Build.Utils:./set" for Set
+import "Soup|Build.Utils:./list-extensions" for ListExtensions
+import "Soup|Build.Utils:./map-extensions" for MapExtensions
+import "Soup|C.Compiler:./build-arguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
+import "Soup|C.Compiler:./build-engine" for BuildEngine
+import "Soup|C.Compiler.Clang:./clang-compiler" for ClangCompiler
+import "Soup|C.Compiler.GCC:./gcc-compiler" for GCCCompiler
+import "Soup|C.Compiler.MSVC:./msvc-compiler" for MSVCCompiler
 
 class BuildTask is SoupTask {
 	/// <summary>

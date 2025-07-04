@@ -2,7 +2,7 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "mwasplund|Soup.Build.Utils:./Path" for Path
+import "Soup|Build.Utils:./Path" for Path
 import "../../test/assert" for Assert
 import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
 import "../core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments

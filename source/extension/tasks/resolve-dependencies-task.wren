@@ -3,8 +3,8 @@
 // </copyright>
 
 import "soup" for Soup, SoupTask
-import "mwasplund|Soup.Build.Utils:./list-extensions" for ListExtensions
-import "mwasplund|Soup.Build.Utils:./map-extensions" for MapExtensions
+import "Soup|Build.Utils:./list-extensions" for ListExtensions
+import "Soup|Build.Utils:./map-extensions" for MapExtensions
 
 /// <summary>
 /// The resolve dependencies build task that knows how to combine all previous state

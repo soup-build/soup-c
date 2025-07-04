@@ -1,4 +1,4 @@
-import "mwasplund|Soup.Build.Utils:./list-extensions" for ListExtensions
+import "Soup|Build.Utils:./list-extensions" for ListExtensions
 
 class Assert {
 	static True(value) {

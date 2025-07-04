@@ -2,7 +2,7 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "mwasplund|Soup.Build.Utils:./list-extensions" for ListExtensions
+import "Soup|Build.Utils:./list-extensions" for ListExtensions
 
 /// <summary>
 /// The enumeration of link targets

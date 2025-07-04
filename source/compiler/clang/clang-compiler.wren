@@ -2,11 +2,11 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "mwasplund|Soup.C.Compiler:./i-compiler" for ICompiler
-import "mwasplund|Soup.C.Compiler:./link-arguments" for LinkTarget
-import "mwasplund|Soup.Build.Utils:./build-operation" for BuildOperation
-import "mwasplund|Soup.Build.Utils:./shared-operations" for SharedOperations
-import "mwasplund|Soup.Build.Utils:./path" for Path
+import "Soup|C.Compiler:./i-compiler" for ICompiler
+import "Soup|C.Compiler:./link-arguments" for LinkTarget
+import "Soup|Build.Utils:./build-operation" for BuildOperation
+import "Soup|Build.Utils:./shared-operations" for SharedOperations
+import "Soup|Build.Utils:./path" for Path
 import "./clang-argument-builder" for ClangArgumentBuilder
 
 /// <summary>

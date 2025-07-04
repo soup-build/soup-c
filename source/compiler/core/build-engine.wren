@@ -4,9 +4,9 @@
 
 
 import "soup" for Soup
-import "mwasplund|Soup.Build.Utils:./shared-operations" for SharedOperations
-import "mwasplund|Soup.Build.Utils:./path" for Path
-import "mwasplund|Soup.Build.Utils:./set" for Set
+import "Soup|Build.Utils:./shared-operations" for SharedOperations
+import "Soup|Build.Utils:./path" for Path
+import "Soup|Build.Utils:./set" for Set
 import "./build-result" for BuildResult
 import "./build-arguments" for BuildOptimizationLevel, BuildTargetType
 import "./link-arguments" for LinkArguments, LinkTarget

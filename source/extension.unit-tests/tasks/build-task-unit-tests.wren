@@ -3,7 +3,7 @@
 // </copyright>
 
 import "soup-test" for SoupTest, SoupTestOperation
-import "mwasplund|Soup.Build.Utils:./path" for Path
+import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
 import "../../extension/tasks/build-task" for BuildTask
 import "../../compiler/core/build-arguments" for BuildOptimizationLevel, BuildTargetType
