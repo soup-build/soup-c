@@ -1,13 +1,13 @@
-﻿// <copyright file="MSVCCompiler.wren" company="Soup">
+﻿// <copyright file="msvc-compiler.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "Soup|C.Compiler:./ICompiler" for ICompiler
-import "Soup|C.Compiler:./LinkArguments" for LinkTarget
-import "Soup|Build.Utils:./BuildOperation" for BuildOperation
-import "Soup|Build.Utils:./SharedOperations" for SharedOperations
-import "Soup|Build.Utils:./Path" for Path
-import "./MSVCArgumentBuilder" for MSVCArgumentBuilder
+import "Soup|C.Compiler:./i-compiler" for ICompiler
+import "Soup|C.Compiler:./link-arguments" for LinkTarget
+import "Soup|Build.Utils:./build-operation" for BuildOperation
+import "Soup|Build.Utils:./shared-operations" for SharedOperations
+import "Soup|Build.Utils:./path" for Path
+import "./msvc-argument-builder" for MSVCArgumentBuilder
 
 /// <summary>
 /// The MSVC compiler implementation
