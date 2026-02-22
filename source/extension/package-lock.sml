@@ -3,7 +3,7 @@ Closure: {
 	Wren: {
 		C: { Version: './', Build: '0', Tool: '0' }
 		'Soup|C': { Version: './', Build: '0', Tool: '0' }
-		'Soup|Build.Utils': { Version: 0.9.1, Digest: 'sha256:4262b242a59bd92a86c26199fcc942f8dca1abe9eb9cb152e855f728ea393312', Build: '0', Tool: '0' }
+		'Soup|Build.Utils': { Version: 0.9.2, Digest: 'sha256:0b70e1c4392ee591b06e64b00fc3b267fad1f32ced90e7b2d61c01c2780e4096', Build: '0', Tool: '0' }
 		'Soup|C.Compiler': { Version: 0.5.0, Digest: 'sha256:11d990dad89efd82b83853c661de5c9260943b1130684676aff426794f74ee65', Build: '0', Tool: '0' }
 		'Soup|C.Compiler.Clang': { Version: 0.5.0, Digest: 'sha256:0bcaa667dafc87f81b37be7f2ba32c5e638306274820ea8a08f7847543a957bc', Build: '0', Tool: '0' }
 		'Soup|C.Compiler.GCC': { Version: 0.5.0, Digest: 'sha256:db7fb588b9f0f89b8db2166d251744c9a0eceb5134668a047aac781b0402f237', Build: '0', Tool: '0' }
@@ -17,7 +17,7 @@ Builds: {
 				Version: 0.5.4
 				Digest: 'sha256:11c795361ffddfb5f954cf747e69c7036d3f52fdd86e0869a40a55c03fa9bac3'
 				Artifacts: {
-					Linux: 'sha256:d2de830aacec2fe5e58291d8149dcdfa93e786a6ad6371769ac911ee78e4b547'
+					Linux: 'sha256:61028ebdd655b14bf293febc483d04c5312c3546b7890dfa104e0e1cf6121112'
 					Windows: 'sha256:a63c6fa40955a46b0e3b95a13cfceaba1e067229b9ef518b957fa7cabb6c195a'
 				}
 			}
