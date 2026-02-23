@@ -106,6 +106,7 @@ class BuildArguments {
 		_sourceFiles = []
 		_assemblySourceFiles = []
 		_publicHeaderSets = []
+		_publicIncludes = []
 		_includeDirectories = []
 		_platformLinkDependencies = []
 		_linkDependencies = []
@@ -192,6 +193,12 @@ class BuildArguments {
 	/// </summary>
 	PublicHeaderSets { _publicHeaderSets }
 	PublicHeaderSets=(value) { _publicHeaderSets = value }
+
+	/// <summary>
+	/// Gets or sets the public include directory list for the build
+	/// </summary>
+	PublicIncludes { _publicIncludes }
+	PublicIncludes=(value) { _publicIncludes = value }
 
 	/// <summary>
 	/// Gets or sets the list of include directories
