@@ -71,7 +71,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c11 -O0 -mpclmul -maes -msse4.1 -msha -c",
+					"-fpic -std=c11 -O0 -mpclmul -maes -msse4.1 -msha -c",
 				],
 				[],
 				[
@@ -131,7 +131,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-std=c11 -O0 -I\"./Includes\" -DDEBUG -mpclmul -maes -msse4.1 -msha -c",
+					"-fpic -std=c11 -O0 -I\"./Includes\" -DDEBUG -mpclmul -maes -msse4.1 -msha -c",
 				],
 				[],
 				[

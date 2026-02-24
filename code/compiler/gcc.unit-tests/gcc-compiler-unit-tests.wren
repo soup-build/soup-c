@@ -31,11 +31,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	Initialize() {
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 		Assert.Equal("GCC", uut.Name)
 		Assert.Equal("o", uut.ObjectFileExtension)
 		Assert.Equal(Path.new("libTest.a"), uut.CreateStaticLibraryFileName("Test"))
@@ -46,11 +42,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	Compile_Simple(){
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -86,7 +78,7 @@ class GCCCompilerUnitTests {
 			BuildOperation.new(
 				"./File.c",
 				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.cl.exe"),
+				Path.new("C:/bin/mock.gcc.exe"),
 				[
 					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
 					"./File.c",
@@ -108,11 +100,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	Compile_Resource() {
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -149,7 +137,7 @@ class GCCCompilerUnitTests {
 			BuildOperation.new(
 				"./Resources.rc",
 				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.rc.exe"),
+				Path.new("C:/bin/mock.gcc.exe"),
 				[
 					"-D_UNICODE",
 					"-DUNICODE",
@@ -174,11 +162,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	LinkStaticLibrary_Simple() {
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.StaticLibrary
@@ -195,7 +179,7 @@ class GCCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Library.mock.a",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
 				"-o",
 				"./Library.mock.a",
@@ -214,11 +198,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	LinkExecutable_Simple() {
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.Executable
@@ -238,7 +218,7 @@ class GCCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
 				"-o",
 				"./Something.exe",
@@ -259,11 +239,7 @@ class GCCCompilerUnitTests {
 	// [Fact]
 	LinkWindowsApplication_Simple() {
 		var uut = GCCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.WindowsApplication
@@ -283,7 +259,7 @@ class GCCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
 				"-o",
 				"./Something.exe",

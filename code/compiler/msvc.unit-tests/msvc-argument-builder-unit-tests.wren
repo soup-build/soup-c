@@ -19,9 +19,9 @@ class MSVCArgumentBuilderUnitTests {
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
-		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Size, "/Os")
+		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Size, "/O1")
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
-		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Speed, "/Ot")
+		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Speed, "/O2")
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_EnableWarningsAsErrors")
 		this.BSCA_SingleArgument_EnableWarningsAsErrors()
 		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_GenerateDebugInformation")
@@ -101,8 +101,8 @@ class MSVCArgumentBuilderUnitTests {
 	}
 
 	// [Theory]
-	// [InlineData(OptimizationLevel.Size, "/Os")]
-	// [InlineData(OptimizationLevel.Speed, "/Ot")]
+	// [InlineData(OptimizationLevel.Size, "/O1")]
+	// [InlineData(OptimizationLevel.Speed, "/O2")]
 	BSCA_SingleArgument_OptimizationLevel(
 		level,
 		expectedFlag) {
