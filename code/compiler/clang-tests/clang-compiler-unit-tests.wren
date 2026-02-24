@@ -71,7 +71,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-fpic -std=c11 -O0 -mpclmul -maes -msse4.1 -msha",
+					"-fpic -std=c11 -O0 -mpclmul -maes -msse4.1 -msha -c",
 				],
 				[],
 				[

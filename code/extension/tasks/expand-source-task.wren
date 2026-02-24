@@ -47,28 +47,27 @@ class ExpandSourceTask is SoupTask {
 		// Expand the source from all discovered files
 		Soup.info("Expand Source")
 		var filesystem = globalState["FileSystem"]
-		var preprocessors = globalState["Preprocessors"]
-		var sourceFiles = ExpandSourceTask.DiscoverCompileFiles(filesystem, Path.new(), preprocessors, allowedPaths)
+		var sourceFiles = ExpandSourceTask.DiscoverCompileFiles(filesystem, Path.new(), allowedPaths)
 
 		ListExtensions.Append(
 			MapExtensions.EnsureList(buildTable, "Source"),
 			sourceFiles)
 	}
 
-	static DiscoverCompileFiles(currentDirectory, workingDirectory, preprocessors, allowedPaths) {
+	static DiscoverCompileFiles(currentDirectory, workingDirectory, allowedPaths) {
 		var files = []
 		for (directoryEntity in currentDirectory) {
 			if (directoryEntity is String) {
 				var file = workingDirectory + Path.new(directoryEntity)
 				Soup.info("Check File: %(file)")
 				if (ExpandSourceTask.IsMatchAny(allowedPaths, file)) {
-					files.add(ExpandSourceTask.CreateSourceInfo(file, preprocessors))
+					files.add(ExpandSourceTask.CreateSourceInfo(file))
 				}
 			} else {
 				for (child in directoryEntity) {
 					var directory = workingDirectory + Path.new(child.key)
 					Soup.info("Found Directory: %(directory)")
-					var subFiles = ExpandSourceTask.DiscoverCompileFiles(child.value, directory, preprocessors, allowedPaths)
+					var subFiles = ExpandSourceTask.DiscoverCompileFiles(child.value, directory, allowedPaths)
 					ListExtensions.Append(files, subFiles)
 				}
 			}
@@ -87,70 +86,8 @@ class ExpandSourceTask is SoupTask {
 		return false
 	}
 
-	static CreateSourceInfo(file, preprocessors) {
+	static CreateSourceInfo(file) {
 		Soup.info("Found Source File: %(file)")
-
-		var sourceInfo = {}
-		sourceInfo["File"] = file.toString
-		var preprocessorResult = ExpandSourceTask.ResolvePreprocessorResult(file, preprocessors)
-		var imports = []
-		for (entry in preprocessorResult["Result"]) {
-			var parseResult = entry.split(" ")
-			if (parseResult.count == 0) {
-				Fiber.abort("Found empty parse result")
-			}
-
-			var resultType = parseResult[0]
-			if (resultType == "import") {
-				if (parseResult.count == 2) {
-					imports.add(parseResult[1])
-				} else {
-					Fiber.abort("Import result must have exactly two values")
-				}
-			} else if (resultType == "module-implementation") {
-				if (parseResult.count == 2) {
-					var module = parseResult[1].split(":")
-					sourceInfo["IsInterface"] = false
-					sourceInfo["Module"] = module[0]
-					if (module.count == 2) {
-						sourceInfo["Partition"] = module[1]
-					}
-				} else {
-					Fiber.abort("Module result must have exactly two values")
-				}
-
-			} else if (resultType == "module-interface") {
-				if (parseResult.count == 2) {
-					var module = parseResult[1].split(":")
-					sourceInfo["IsInterface"] = true
-					sourceInfo["Module"] = module[0]
-					if (module.count == 2) {
-						sourceInfo["Partition"] = module[1]
-					}
-				} else {
-					Fiber.abort("Module result must have exactly two values")
-				}
-
-			} else {
-				Fiber.abort("Unknown parser result type %(resultType)")
-			}
-		}
-
-		sourceInfo["Imports"] = imports
-
-		return sourceInfo
-	}
-
-	static ResolvePreprocessorResult(file, preprocessors) {
-		var preprocessorName = "Scan %(file)"
-
-		Soup.info("Preprocessor: %(preprocessorName)")
-		for (preprocessor in preprocessors) {
-			if (preprocessor["Title"] == preprocessorName) {
-				return preprocessor
-			}
-		}
-
-		Fiber.abort("Preprocessor result missing for %(file)")
+		return file.toString
 	}
 }

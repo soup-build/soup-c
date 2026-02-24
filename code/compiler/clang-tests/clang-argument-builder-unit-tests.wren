@@ -57,6 +57,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -79,6 +80,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -105,6 +107,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -129,6 +132,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -153,6 +157,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -181,6 +186,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -209,6 +215,7 @@ class ClangArgumentBuilderUnitTests {
 			"-maes",
 			"-msse4.1",
 			"-msha",
+			"-c",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
