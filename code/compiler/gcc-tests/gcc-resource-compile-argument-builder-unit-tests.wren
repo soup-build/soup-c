@@ -1,19 +1,19 @@
-// <copyright file="msvc-resource-rompile-argument-builder-unit-tests.wren" company="Soup">
+// <copyright file="gcc-resource-compile-argument-builder-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
 import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
-import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
+import "../gcc/gcc-argument-builder" for GCCArgumentBuilder
 import "../core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments
 
 
-class MSVCResourceCompileArgumentBuilderUnitTests {
+class GCCResourceCompileArgumentBuilderUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("MSVCResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple()")
+		System.print("GCCResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple()")
 		this.BuildResourceCompilerArguments_Simple()
 	}
 
@@ -26,16 +26,16 @@ class MSVCResourceCompileArgumentBuilderUnitTests {
 			Path.new("Resources.rc"),
 			Path.new("Resources.mock.res"))
 
-		var actualArguments = MSVCArgumentBuilder.BuildResourceCompilerArguments(
+		var actualArguments = GCCArgumentBuilder.BuildResourceCompilerArguments(
 			targetRootDirectory,
 			arguments)
 
 		var expectedArguments = [
-			"/nologo",
-			"/D_UNICODE",
-			"/DUNICODE",
-			"/l\"0x0409\"",
-			"/Fo\"C:/target/Resources.mock.res\"",
+			"-D_UNICODE",
+			"-DUNICODE",
+			"-l\"0x0409\"",
+			"-o",
+			"C:/target/Resources.mock.res",
 			"./Resources.rc",
 		]
 

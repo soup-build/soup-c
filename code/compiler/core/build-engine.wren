@@ -2,15 +2,15 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-
 import "soup" for Soup
-import "Soup|Build.Utils:./shared-operations" for SharedOperations
-import "Soup|Build.Utils:./path" for Path
-import "Soup|Build.Utils:./set" for Set
 import "./build-result" for BuildResult
 import "./build-arguments" for BuildOptimizationLevel, BuildTargetType
 import "./link-arguments" for LinkArguments, LinkTarget
 import "./compile-arguments" for OptimizationLevel, ResourceCompileArguments, SharedCompileArguments, TranslationUnitCompileArguments
+import "Soup|Build.Utils:./map-extensions" for MapExtensions
+import "Soup|Build.Utils:./path" for Path
+import "Soup|Build.Utils:./set" for Set
+import "Soup|Build.Utils:./shared-operations" for SharedOperations
 
 /// <summary>
 /// The build engine
@@ -91,19 +91,20 @@ class BuildEngine {
 			}
 
 			// Compile the individual translation units
-			var compileImplementationUnits = []
-			for (file in arguments.SourceFiles) {
-				Soup.info("Generate Compile Operation: %(file)")
+			var compileTranslationUnits = []
+			for (source in arguments.SourceFiles) {
+				// Compile as a standard TU
+				Soup.info("Generate Compile Operation: %(source)")
 
 				var compileFileArguments = TranslationUnitCompileArguments.new()
-				compileFileArguments.SourceFile = file
-				compileFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(file.GetFileName())
+				compileFileArguments.SourceFile = source
+				compileFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
 				compileFileArguments.TargetFile.SetFileExtension(_compiler.ObjectFileExtension)
 
-				compileImplementationUnits.add(compileFileArguments)
+				compileTranslationUnits.add(compileFileArguments)
 			}
 
-			compileArguments.ImplementationUnits = compileImplementationUnits
+			compileArguments.TranslationUnits = compileTranslationUnits
 
 			// Compile the individual assembly units
 			var compileAssemblyUnits = []
@@ -178,21 +179,20 @@ class BuildEngine {
 		}
 
 		// Add the implementation unit object files
-		for (sourceFile in arguments.SourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
+		for (source in arguments.SourceFiles) {
+			var objectFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
 			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
 			objectFiles.add(objectFile)
 		}
 
 		// Add the assembly unit object files
-		for (sourceFile in arguments.AssemblySourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(sourceFile.GetFileName())
+		for (source in arguments.AssemblySourceFiles) {
+			var objectFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
 			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
 			objectFiles.add(objectFile)
 		}
 
 		linkArguments.ObjectFiles = objectFiles
-
 
 		// Only resolve link libraries if not a library ourself
 		if (arguments.TargetType != BuildTargetType.StaticLibrary) {
@@ -355,15 +355,8 @@ class BuildEngine {
 			Soup.info("Pass Along Public Includes")
 
 			for (directory in arguments.PublicIncludes) {
-				result.PublicIncludes.add(directory)
+				result.PublicIncludes.add(directory)			
 			}
-		}
-	}
-
-	BuildClosure(closure, file, partitionInterfaceDependencyLookup) {
-		for (childFile in partitionInterfaceDependencyLookup[file.toString]) {
-			closure.add(childFile)
-			this.BuildClosure(closure, childFile, partitionInterfaceDependencyLookup)
 		}
 	}
 

@@ -153,9 +153,12 @@ class RecipeBuildTask is SoupTask {
 		}
 
 		// Load the source files if present
-		var sourceFiles = null
+		var knownSourceFiles = null
 		if (recipe.containsKey("Source")) {
-			sourceFiles = recipe["Source"]
+			knownSourceFiles = []
+			for (file in recipe["Source"]) {
+				knownSourceFiles.add(file)
+			}
 		}
 
 		// Load the assembly source files if present
@@ -222,10 +225,10 @@ class RecipeBuildTask is SoupTask {
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "LibraryPaths"),
 			ListExtensions.ConvertFromPathList(libraryPaths))
-		if (sourceFiles != null) {
+		if (knownSourceFiles != null) {
 			ListExtensions.Append(
-				MapExtensions.EnsureList(build, "Source"),
-				sourceFiles)
+				MapExtensions.EnsureList(build, "KnownSource"),
+				knownSourceFiles)
 		}
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "AssemblySource"),
@@ -244,12 +247,7 @@ class RecipeBuildTask is SoupTask {
 
 		build["TargetType"] = targetType
 
-		// Convert the recipe language version to the required build language
 		var languageStandard = LanguageStandard.C17
-		if (recipe.containsKey("LanguageVersion")) {
-			languageStandard = RecipeBuildTask.ParseLanguageStandard(recipe["LanguageVersion"])
-		}
-
 		build["LanguageStandard"] = languageStandard
 	}
 
@@ -298,20 +296,6 @@ class RecipeBuildTask is SoupTask {
 			return BuildTargetType.DynamicLibrary
 		} else {
 			Fiber.abort("Unknown target type value.")
-		}
-	}
-
-	static ParseLanguageStandard(value) {
-		if (value == "C89") {
-			return LanguageStandard.C89
-		} else if (value == "C99") {
-			return LanguageStandard.C99
-		} else if (value == "C11") {
-			return LanguageStandard.C11
-		} else if (value == "C17") {
-			return LanguageStandard.C17
-		} else {
-			Fiber.abort("Unknown recipe language standard value.")
 		}
 	}
 }

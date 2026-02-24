@@ -71,7 +71,7 @@ class MockCompiler is ICompiler {
 
 		var result = []
 
-		for (fileArguments in arguments.ImplementationUnits) {
+		for (translationUnitArguments in arguments.TranslationUnits) {
 			result.add(
 				BuildOperation.new(
 					"MockCompile: %(_compileRequests.count)",
@@ -81,10 +81,10 @@ class MockCompiler is ICompiler {
 						"Arguments",
 					],
 					[
-						fileArguments.SourceFile,
+						translationUnitArguments.SourceFile,
 					],
 					[
-						fileArguments.TargetFile,
+						translationUnitArguments.TargetFile,
 					]))
 		}
 

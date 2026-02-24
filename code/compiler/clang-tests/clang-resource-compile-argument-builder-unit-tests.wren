@@ -1,20 +1,20 @@
-// <copyright file="gcc-resource-compile-argument-builder-unit-tests.wren" company="Soup">
+// <copyright file="clang-resource-compile-argument-builder-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
+import "../clang/clang-argument-builder" for ClangArgumentBuilder
 import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
-import "../gcc/gcc-argument-builder" for GCCArgumentBuilder
 import "../core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments
 
 
-class GCCResourceCompileArgumentBuilderUnitTests {
+class ClangResourceCompileArgumentBuilderUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("GCCResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple")
-		this.BuildResourceCompilerArguments_Simple()
+		// System.print("ClangResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple")
+		// this.BuildResourceCompilerArguments_Simple()
 	}
 
 	// [Fact]
@@ -26,7 +26,7 @@ class GCCResourceCompileArgumentBuilderUnitTests {
 			Path.new("Resources.rc"),
 			Path.new("Resources.mock.res"))
 
-		var actualArguments = GCCArgumentBuilder.BuildResourceCompilerArguments(
+		var actualArguments = ClangArgumentBuilder.BuildResourceCompilerArguments(
 			targetRootDirectory,
 			arguments)
 

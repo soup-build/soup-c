@@ -1,56 +1,48 @@
-// <copyright file="msvc-compiler-unit-tests.wren" company="Soup">
+// <copyright file="gcc-compiler-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "../msvc/msvc-compiler" for MSVCCompiler
 import "Soup|Build.Utils:./path" for Path
-import "../../test/assert" for Assert
 import "Soup|Build.Utils:./build-operation" for BuildOperation
+import "../gcc/gcc-compiler" for GCCCompiler
+import "../../test/assert" for Assert
 import "../core/link-arguments" for LinkArguments, LinkTarget
 import "../core/compile-arguments" for LanguageStandard, OptimizationLevel,  SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
 
-class MSVCCompilerUnitTests {
+class GCCCompilerUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("MSVCCompilerUnitTests.Initialize()")
+		System.print("GCCCompilerUnitTests.Initialize()")
 		this.Initialize()
-		System.print("MSVCCompilerUnitTests.Compile_Simple()")
+		System.print("GCCCompilerUnitTests.Compile_Simple()")
 		this.Compile_Simple()
-		System.print("MSVCCompilerUnitTests.Compile_Resource()")
+		System.print("GCCCompilerUnitTests.Compile_Resource()")
 		this.Compile_Resource()
-		System.print("MSVCCompilerUnitTests.LinkStaticLibrary_Simple()")
+		System.print("GCCCompilerUnitTests.LinkStaticLibrary_Simple()")
 		this.LinkStaticLibrary_Simple()
-		System.print("MSVCCompilerUnitTests.LinkExecutable_Simple()")
+		System.print("GCCCompilerUnitTests.LinkExecutable_Simple()")
 		this.LinkExecutable_Simple()
-		System.print("MSVCCompilerUnitTests.LinkWindowsApplication_Simple()")
+		System.print("GCCCompilerUnitTests.LinkWindowsApplication_Simple()")
 		this.LinkWindowsApplication_Simple()
 	}
 
 	// [Fact]
 	Initialize() {
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
-		Assert.Equal("MSVC", uut.Name)
-		Assert.Equal("obj", uut.ObjectFileExtension)
-		Assert.Equal(Path.new("Test.lib"), uut.CreateStaticLibraryFileName("Test"))
-		Assert.Equal("dll", uut.DynamicLibraryFileExtension)
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
+		Assert.Equal("GCC", uut.Name)
+		Assert.Equal("o", uut.ObjectFileExtension)
+		Assert.Equal(Path.new("libTest.a"), uut.CreateStaticLibraryFileName("Test"))
+		Assert.Equal("so", uut.DynamicLibraryFileExtension)
 		Assert.Equal("res", uut.ResourceFileExtension)
 	}
 
 	// [Fact]
 	Compile_Simple(){
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -63,7 +55,7 @@ class MSVCCompilerUnitTests {
 		translationUnitArguments.SourceFile = Path.new("File.c")
 		translationUnitArguments.TargetFile = Path.new("obj/File.obj")
 
-		arguments.ImplementationUnits = [
+		arguments.TranslationUnits = [
 			translationUnitArguments,
 		]
 
@@ -77,7 +69,7 @@ class MSVCCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"/nologo /FC /permissive- /Zc:__cplusplus /Zc:externConstexpr /Zc:inline /Zc:throwingNew /W4 /std:c11 /Od /X /RTC1 /MT /bigobj /c",
+					"-std=c11 -O0 -c",
 				],
 				[],
 				[
@@ -86,11 +78,12 @@ class MSVCCompilerUnitTests {
 			BuildOperation.new(
 				"./File.c",
 				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.cl.exe"),
+				Path.new("C:/bin/mock.gcc.exe"),
 				[
 					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
 					"./File.c",
-					"/Fo\"C:/target/obj/File.obj\"",
+					"-o",
+					"C:/target/obj/File.obj",
 				],
 				[
 					Path.new("File.c"),
@@ -106,12 +99,8 @@ class MSVCCompilerUnitTests {
 
 	// [Fact]
 	Compile_Resource() {
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -139,7 +128,7 @@ class MSVCCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"/nologo /FC /permissive- /Zc:__cplusplus /Zc:externConstexpr /Zc:inline /Zc:throwingNew /W4 /std:c11 /Od /I\"./Includes\" /DDEBUG /X /RTC1 /MT /bigobj /c",
+					"-std=c11 -O0 -I\"./Includes\" -DDEBUG -c",
 				],
 				[],
 				[
@@ -148,14 +137,14 @@ class MSVCCompilerUnitTests {
 			BuildOperation.new(
 				"./Resources.rc",
 				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.rc.exe"),
+				Path.new("C:/bin/mock.gcc.exe"),
 				[
-					"/nologo",
-					"/D_UNICODE",
-					"/DUNICODE",
-					"/l\"0x0409\"",
-					"/I\"./Includes\"",
-					"/Fo\"C:/target/obj/Resources.res\"",
+					"-D_UNICODE",
+					"-DUNICODE",
+					"-l\"0x0409\"",
+					"-I\"./Includes\"",
+					"-o",
+					"C:/target/obj/Resources.res",
 					"./Resources.rc",
 				],
 				[
@@ -172,12 +161,8 @@ class MSVCCompilerUnitTests {
 
 	// [Fact]
 	LinkStaticLibrary_Simple() {
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.StaticLibrary
@@ -194,12 +179,10 @@ class MSVCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Library.mock.a",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
-				"/nologo",
-				"/INCREMENTAL:NO",
-				"/machine:X64",
-				"/out:\"./Library.mock.a\"",
+				"-o",
+				"./Library.mock.a",
 				"./File.mock.obj",
 			],
 			[
@@ -214,12 +197,8 @@ class MSVCCompilerUnitTests {
 
 	// [Fact]
 	LinkExecutable_Simple() {
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.Executable
@@ -239,13 +218,10 @@ class MSVCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
-				"/nologo",
-				"/INCREMENTAL:NO",
-				"/subsystem:console",
-				"/machine:X64",
-				"/out:\"./Something.exe\"",
+				"-o",
+				"./Something.exe",
 				"./Library.mock.a",
 				"./File.mock.obj",
 			],
@@ -262,12 +238,8 @@ class MSVCCompilerUnitTests {
 
 	// [Fact]
 	LinkWindowsApplication_Simple() {
-		var uut = MSVCCompiler.new(
-			Path.new("C:/bin/mock.cl.exe"),
-			Path.new("C:/bin/mock.link.exe"),
-			Path.new("C:/bin/mock.lib.exe"),
-			Path.new("C:/bin/mock.rc.exe"),
-			Path.new("C:/bin/mock.ml.exe"))
+		var uut = GCCCompiler.new(
+			Path.new("C:/bin/mock.gcc.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.WindowsApplication
@@ -287,13 +259,10 @@ class MSVCCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.gcc.exe"),
 			[
-				"/nologo",
-				"/INCREMENTAL:NO",
-				"/subsystem:windows",
-				"/machine:X64",
-				"/out:\"./Something.exe\"",
+				"-o",
+				"./Something.exe",
 				"./Library.mock.a",
 				"./File.mock.obj",
 			],

@@ -1,20 +1,20 @@
-import "./compiler/core.unit-tests/build-engine-unit-tests" for BuildEngineUnitTests
-import "./compiler/clang.unit-tests/clang-argument-builder-unit-tests" for ClangArgumentBuilderUnitTests
-import "./compiler/clang.unit-tests/clang-compiler-unit-tests" for ClangCompilerUnitTests
-import "./compiler/clang.unit-tests/clang-linker-argument-builder-unit-tests" for ClangLinkerArgumentBuilderUnitTests
-import "./compiler/clang.unit-tests/clang-resource-compile-argument-builder-unit-tests" for ClangResourceCompileArgumentBuilderUnitTests
-import "./compiler/gcc.unit-tests/gcc-argument-builder-unit-tests" for GCCArgumentBuilderUnitTests
-import "./compiler/gcc.unit-tests/gcc-compiler-unit-tests" for GCCCompilerUnitTests
-import "./compiler/gcc.unit-tests/gcc-linker-argument-builder-unit-tests" for GCCLinkerArgumentBuilderUnitTests
-import "./compiler/gcc.unit-tests/gcc-resource-compile-argument-builder-unit-tests" for GCCResourceCompileArgumentBuilderUnitTests
-import "./compiler/msvc.unit-tests/msvc-argument-builder-unit-tests" for MSVCArgumentBuilderUnitTests
-import "./compiler/msvc.unit-tests/msvc-compiler-unit-tests" for MSVCCompilerUnitTests
-import "./compiler/msvc.unit-tests/msvc-linker-argument-builder-unit-tests" for MSVCLinkerArgumentBuilderUnitTests
-import "./compiler/msvc.unit-tests/msvc-resource-compile-argument-builder-unit-tests" for MSVCResourceCompileArgumentBuilderUnitTests
-import "./extension.unit-tests/tasks/build-task-unit-tests" for BuildTaskUnitTests
-import "./extension.unit-tests/tasks/initialize-defaults-task-unit-tests" for InitializeDefaultsTaskUnitTests
-import "./extension.unit-tests/tasks/recipe-build-task-unit-tests" for RecipeBuildTaskUnitTests
-import "./extension.unit-tests/tasks/resolve-tools-task-unit-tests" for ResolveToolsTaskUnitTests
+import "./compiler/core-tests/build-engine-unit-tests" for BuildEngineUnitTests
+import "./compiler/clang-tests/clang-argument-builder-unit-tests" for ClangArgumentBuilderUnitTests
+import "./compiler/clang-tests/clang-compiler-unit-tests" for ClangCompilerUnitTests
+import "./compiler/clang-tests/clang-linker-argument-builder-unit-tests" for ClangLinkerArgumentBuilderUnitTests
+import "./compiler/clang-tests/clang-resource-compile-argument-builder-unit-tests" for ClangResourceCompileArgumentBuilderUnitTests
+import "./compiler/gcc-tests/gcc-argument-builder-unit-tests" for GCCArgumentBuilderUnitTests
+import "./compiler/gcc-tests/gcc-compiler-unit-tests" for GCCCompilerUnitTests
+import "./compiler/gcc-tests/gcc-linker-argument-builder-unit-tests" for GCCLinkerArgumentBuilderUnitTests
+import "./compiler/gcc-tests/gcc-resource-compile-argument-builder-unit-tests" for GCCResourceCompileArgumentBuilderUnitTests
+import "./compiler/msvc-tests/msvc-argument-builder-unit-tests" for MSVCArgumentBuilderUnitTests
+import "./compiler/msvc-tests/msvc-compiler-unit-tests" for MSVCCompilerUnitTests
+import "./compiler/msvc-tests/msvc-linker-argument-builder-unit-tests" for MSVCLinkerArgumentBuilderUnitTests
+import "./compiler/msvc-tests/msvc-resource-compile-argument-builder-unit-tests" for MSVCResourceCompileArgumentBuilderUnitTests
+import "./extension-tests/tasks/build-task-unit-tests" for BuildTaskUnitTests
+import "./extension-tests/tasks/initialize-defaults-task-unit-tests" for InitializeDefaultsTaskUnitTests
+import "./extension-tests/tasks/recipe-build-task-unit-tests" for RecipeBuildTaskUnitTests
+import "./extension-tests/tasks/resolve-tools-task-unit-tests" for ResolveToolsTaskUnitTests
 
 var uut
 

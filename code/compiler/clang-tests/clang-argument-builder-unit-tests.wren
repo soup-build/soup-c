@@ -3,8 +3,8 @@
 // </copyright>
 
 import "Soup|Build.Utils:./path" for Path
-import "../../test/assert" for Assert
 import "../clang/clang-argument-builder" for ClangArgumentBuilder
+import "../../test/assert" for Assert
 import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 
 class ClangArgumentBuilderUnitTests {
@@ -12,27 +12,27 @@ class ClangArgumentBuilderUnitTests {
 	}
 
 	RunTests() {
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, \"-std=c11\")")
 		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, "-std=c11")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, \"-std=c17\")")
 		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, "-std=c17")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled()")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Size, \"-Os\")")
 		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Size, "-Os")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Speed, \"-O3\")")
 		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Speed, "-O3")
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_EnableWarningsAsErrors")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_EnableWarningsAsErrors()")
 		this.BSCA_SingleArgument_EnableWarningsAsErrors()
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_GenerateDebugInformation")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_GenerateDebugInformation()")
 		this.BSCA_SingleArgument_GenerateDebugInformation()
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_IncludePaths")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_IncludePaths()")
 		this.BSCA_SingleArgument_IncludePaths()
-		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions")
+		System.print("ClangArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions()")
 		this.BSCA_SingleArgument_PreprocessorDefinitions()
-		System.print("ClangArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple")
+		System.print("ClangArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple()")
 		this.BuildTranslationUnitCompilerArguments_Simple()
-		System.print("ClangArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple")
+		System.print("ClangArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple()")
 		this.BuildAssemblyUnitCompilerArguments_Simple()
 	}
 
@@ -56,8 +56,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -79,8 +78,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -106,8 +104,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -131,8 +128,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -156,8 +152,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -185,8 +180,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)
@@ -214,8 +208,7 @@ class ClangArgumentBuilderUnitTests {
 			"-mpclmul",
 			"-maes",
 			"-msse4.1",
-			"-msha", 
-			"-c",
+			"-msha",
 		]
 
 		Assert.ListEqual(expectedArguments, actualArguments)

@@ -48,22 +48,6 @@ class BuildTargetType {
 }
 
 /// <summary>
-/// The source file definition
-/// </summary>
-class SourceFile {
-	construct new() {
-		_file = null
-		_isModule = false
-	}
-
-	File { _file }
-	File=(value) { _file = value }
-
-	IsModule { _isModule }
-	IsModule=(value) { _isModule = value }
-}
-
-/// <summary>
 /// The header file set
 /// </summary>
 class HeaderFileSet {

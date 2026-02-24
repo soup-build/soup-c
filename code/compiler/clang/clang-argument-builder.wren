@@ -1,4 +1,4 @@
-﻿// <copyright file="clang-argument-builder.wren" company="Soup">
+// <copyright file="clang-argument-builder.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
@@ -58,6 +58,10 @@ class ClangArgumentBuilder {
 		// Convert absolute addresses to relative addresses
 		ClangArgumentBuilder.AddFlag(commandArguments, "fpic")
 		
+		// Uncomment to enable memory checks
+		// ClangArgumentBuilder.AddParameter(commandArguments, "fsanitize", "address")
+		// ClangArgumentBuilder.AddFlag(commandArguments, "fno-omit-frame-pointer")
+
 		// Set the language standard
 		if (arguments.Standard == LanguageStandard.C89) {
 			ClangArgumentBuilder.AddParameter(commandArguments, ClangArgumentBuilder.Compiler_ArgumentParameter_Standard, "c89")
@@ -98,9 +102,8 @@ class ClangArgumentBuilder {
 		ClangArgumentBuilder.AddFlag(commandArguments, "maes")
 		ClangArgumentBuilder.AddFlag(commandArguments, "msse4.1")
 		ClangArgumentBuilder.AddFlag(commandArguments, "msha")
-		
-		// Only run preprocessor, compile and assemble
-		ClangArgumentBuilder.AddFlag(commandArguments, ClangArgumentBuilder.Compiler_ArgumentFlag_CompileOnly)
+
+		// option ClangArgumentBuilder.AddParameter(commandArguments, "stdlib", "libc++")
 
 		return commandArguments
 	}
@@ -246,6 +249,13 @@ class ClangArgumentBuilder {
 
 		var commandArguments = []
 
+		// Enable verbose output
+		// ClangArgumentBuilder.AddFlag(commandArguments, "v")
+
+		// Memory checks
+		// ClangArgumentBuilder.AddParameter(commandArguments, "fsanitize", "address")
+		// ClangArgumentBuilder.AddFlag(commandArguments, "fno-omit-frame-pointer")
+		
 		// Set the library paths
 		for (directory in arguments.LibraryPaths) {
 			ClangArgumentBuilder.AddParameterWithQuotes(

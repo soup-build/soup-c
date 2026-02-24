@@ -3,24 +3,24 @@
 // </copyright>
 
 import "soup-test" for SoupTest, SoupTestOperation
-import "Soup|Build.Utils:./path" for Path
-import "../../test/assert" for Assert
 import "../../extension/tasks/build-task" for BuildTask
 import "../../compiler/core/build-arguments" for BuildOptimizationLevel, BuildTargetType
 import "../../compiler/core/link-arguments" for LinkArguments, LinkTarget
 import "../../compiler/core/mock-compiler" for MockCompiler
 import "../../compiler/core/compile-arguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "Soup|Build.Utils:./path" for Path
+import "../../test/assert" for Assert
 
 class BuildTaskUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("BuildTaskUnitTests.Build_WindowsApplication")
+		System.print("BuildTaskUnitTests.Build_WindowsApplication()")
 		this.Build_WindowsApplication()
-		System.print("BuildTaskUnitTests.Build_Executable")
+		System.print("BuildTaskUnitTests.Build_Executable()")
 		this.Build_Executable()
-		System.print("BuildTaskUnitTests.Build_Library_MultipleFiles")
+		System.print("BuildTaskUnitTests.Build_Library_MultipleFiles()")
 		this.Build_Library_MultipleFiles()
 	}
 
@@ -88,7 +88,7 @@ class BuildTaskUnitTests {
 		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnitArguments,
 		]
 
@@ -234,7 +234,7 @@ class BuildTaskUnitTests {
 		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnitArguments,
 		]
 
@@ -390,7 +390,7 @@ class BuildTaskUnitTests {
 			Path.new("AnotherFolder/Sub"),
 		]
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			TranslationUnitCompileArguments.new(
 				Path.new("TestFile1.c"),
 				Path.new("obj/TestFile1.mock.obj")),

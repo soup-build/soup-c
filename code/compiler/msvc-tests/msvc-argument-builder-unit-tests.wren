@@ -2,37 +2,37 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
 import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
 import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
 
 class MSVCArgumentBuilderUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, \"/std:c11\")")
 		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C11, "/std:c11")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, \"/std:c17\")")
 		this.BSCA_SingleArgument_LanguageStandard(LanguageStandard.C17, "/std:c17")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Disabled()")
 		this.BSCA_SingleArgument_OptimizationLevel_Disabled()
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
-		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Size, "/O1")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel")
-		this.BSCA_SingleArgument_OptimizationLevel(OptimizationLevel.Speed, "/O2")
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_EnableWarningsAsErrors")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Size()")
+		this.BSCA_SingleArgument_OptimizationLevel_Size()
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_OptimizationLevel_Speed()")
+		this.BSCA_SingleArgument_OptimizationLevel_Speed()
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_EnableWarningsAsErrors()")
 		this.BSCA_SingleArgument_EnableWarningsAsErrors()
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_GenerateDebugInformation")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_GenerateDebugInformation()")
 		this.BSCA_SingleArgument_GenerateDebugInformation()
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_IncludePaths")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_IncludePaths()")
 		this.BSCA_SingleArgument_IncludePaths()
-		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions")
+		System.print("MSVCArgumentBuilderUnitTests.BSCA_SingleArgument_PreprocessorDefinitions()")
 		this.BSCA_SingleArgument_PreprocessorDefinitions()
-		System.print("MSVCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple")
+		System.print("MSVCArgumentBuilderUnitTests.BuildTranslationUnitCompilerArguments_Simple()")
 		this.BuildTranslationUnitCompilerArguments_Simple()
-		System.print("MSVCArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple")
+		System.print("MSVCArgumentBuilderUnitTests.BuildAssemblyUnitCompilerArguments_Simple()")
 		this.BuildAssemblyUnitCompilerArguments_Simple()
 	}
 
@@ -100,15 +100,11 @@ class MSVCArgumentBuilderUnitTests {
 		Assert.ListEqual(expectedArguments, actualArguments)
 	}
 
-	// [Theory]
-	// [InlineData(OptimizationLevel.Size, "/O1")]
-	// [InlineData(OptimizationLevel.Speed, "/O2")]
-	BSCA_SingleArgument_OptimizationLevel(
-		level,
-		expectedFlag) {
+	// [Fact]
+	BSCA_SingleArgument_OptimizationLevel_Size() {
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C17
-		arguments.Optimize = level
+		arguments.Optimize = OptimizationLevel.Size
 
 		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
 			arguments)
@@ -123,9 +119,38 @@ class MSVCArgumentBuilderUnitTests {
 			"/Zc:throwingNew",
 			"/W4",
 			"/std:c17",
-			expectedFlag,
+			"/O1",
 			"/X",
 			"/RTC1",
+			"/MT",
+			"/bigobj",
+			"/c",
+		]
+
+		Assert.ListEqual(expectedArguments, actualArguments)
+	}
+
+	// [Fact]
+	BSCA_SingleArgument_OptimizationLevel_Speed() {
+		var arguments = SharedCompileArguments.new()
+		arguments.Standard = LanguageStandard.C17
+		arguments.Optimize = OptimizationLevel.Speed
+
+		var actualArguments = MSVCArgumentBuilder.BuildSharedCompilerArguments(
+			arguments)
+
+		var expectedArguments = [
+			"/nologo",
+			"/FC",
+			"/permissive-",
+			"/Zc:__cplusplus",
+			"/Zc:externConstexpr",
+			"/Zc:inline",
+			"/Zc:throwingNew",
+			"/W4",
+			"/std:c17",
+			"/O2",
+			"/X",
 			"/MT",
 			"/bigobj",
 			"/c",

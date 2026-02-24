@@ -1,4 +1,4 @@
-﻿// <copyright file="gcc-argument-builder.wren" company="Soup">
+// <copyright file="gcc-argument-builder.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
@@ -52,6 +52,9 @@ class GCCArgumentBuilder {
 			GCCArgumentBuilder.AddFlagValue(commandArguments, "w", warning)
 		}
 
+		// Uncomment to enable memory checks
+		// GCCArgumentBuilder.AddParameter(commandArguments, "fsanitize", "address")
+		
 		// Set the language standard
 		if (arguments.Standard == LanguageStandard.C89) {
 			GCCArgumentBuilder.AddParameter(commandArguments, GCCArgumentBuilder.Compiler_ArgumentParameter_Standard, "c89")

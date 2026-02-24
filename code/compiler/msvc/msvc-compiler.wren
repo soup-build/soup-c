@@ -105,25 +105,25 @@ class MSVCCompiler is ICompiler {
 			operations.add(buildOperation)
 		}
 
-		for (implementationUnitArguments in arguments.ImplementationUnits) {
+		for (translationUnitArguments in arguments.TranslationUnits) {
 			// Build up the input/output sets
 			var inputFiles = [] + sharedInputFiles
-			inputFiles.add(implementationUnitArguments.SourceFile)
+			inputFiles.add(translationUnitArguments.SourceFile)
 			inputFiles.add(absoluteResponseFile)
 
 			var outputFiles = [
-				arguments.TargetRootDirectory + implementationUnitArguments.TargetFile,
+				arguments.TargetRootDirectory + translationUnitArguments.TargetFile,
 			]
 
 			// Build the unique arguments for this translation unit
 			var commandArguments = MSVCArgumentBuilder.BuildTranslationUnitCompilerArguments(
 				arguments.TargetRootDirectory,
-				implementationUnitArguments,
+				translationUnitArguments,
 				absoluteResponseFile)
 
 			// Generate the operation
 			var buildOperation = BuildOperation.new(
-				implementationUnitArguments.SourceFile.toString,
+				translationUnitArguments.SourceFile.toString,
 				arguments.SourceRootDirectory,
 				_compilerExecutable,
 				commandArguments,

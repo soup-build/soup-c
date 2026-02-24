@@ -1,50 +1,56 @@
-// <copyright file="clang-compiler-unit-tests.wren" company="Soup">
+// <copyright file="msvc-compiler-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
 import "Soup|Build.Utils:./path" for Path
 import "Soup|Build.Utils:./build-operation" for BuildOperation
 import "../../test/assert" for Assert
-import "../clang/clang-compiler" for ClangCompiler
+import "../msvc/msvc-compiler" for MSVCCompiler
 import "../core/link-arguments" for LinkArguments, LinkTarget
-import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
+import "../core/compile-arguments" for LanguageStandard, OptimizationLevel,  SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
 
-class ClangCompilerUnitTests {
+class MSVCCompilerUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("ClangCompilerUnitTests.Initialize")
+		System.print("MSVCCompilerUnitTests.Initialize()")
 		this.Initialize()
-		System.print("ClangCompilerUnitTests.Compile_Simple")
+		System.print("MSVCCompilerUnitTests.Compile_Simple()")
 		this.Compile_Simple()
-		// System.print("ClangCompilerUnitTests.Compile_Resource")
-		// this.Compile_Resource()
-		System.print("ClangCompilerUnitTests.LinkStaticLibrary_Simple")
+		System.print("MSVCCompilerUnitTests.Compile_Resource()")
+		this.Compile_Resource()
+		System.print("MSVCCompilerUnitTests.LinkStaticLibrary_Simple()")
 		this.LinkStaticLibrary_Simple()
-		System.print("ClangCompilerUnitTests.LinkExecutable_Simple")
+		System.print("MSVCCompilerUnitTests.LinkExecutable_Simple()")
 		this.LinkExecutable_Simple()
-		// System.print("ClangCompilerUnitTests.LinkWindowsApplication_Simple")
-		// this.LinkWindowsApplication_Simple()
+		System.print("MSVCCompilerUnitTests.LinkWindowsApplication_Simple()")
+		this.LinkWindowsApplication_Simple()
 	}
 
 	// [Fact]
 	Initialize() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
-		Assert.Equal("Clang", uut.Name)
-		Assert.Equal("o", uut.ObjectFileExtension)
-		Assert.Equal(Path.new("libTest.a"), uut.CreateStaticLibraryFileName("Test"))
-		Assert.Equal("so", uut.DynamicLibraryFileExtension)
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
+		Assert.Equal("MSVC", uut.Name)
+		Assert.Equal("obj", uut.ObjectFileExtension)
+		Assert.Equal(Path.new("Test.lib"), uut.CreateStaticLibraryFileName("Test"))
+		Assert.Equal("dll", uut.DynamicLibraryFileExtension)
 		Assert.Equal("res", uut.ResourceFileExtension)
 	}
 
 	// [Fact]
 	Compile_Simple(){
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -55,9 +61,9 @@ class ClangCompilerUnitTests {
 
 		var translationUnitArguments = TranslationUnitCompileArguments.new()
 		translationUnitArguments.SourceFile = Path.new("File.c")
-		translationUnitArguments.TargetFile = Path.new("obj/File.o")
+		translationUnitArguments.TargetFile = Path.new("obj/File.obj")
 
-		arguments.ImplementationUnits = [
+		arguments.TranslationUnits = [
 			translationUnitArguments,
 		]
 
@@ -71,7 +77,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-fpic -std=c11 -O0 -mpclmul -maes -msse4.1 -msha -c",
+					"/nologo /FC /permissive- /Zc:__cplusplus /Zc:externConstexpr /Zc:inline /Zc:throwingNew /W4 /std:c11 /Od /X /RTC1 /MT /bigobj /c",
 				],
 				[],
 				[
@@ -80,19 +86,18 @@ class ClangCompilerUnitTests {
 			BuildOperation.new(
 				"./File.c",
 				Path.new("C:/source/"),
-				Path.new("C:/bin/mock.clang++"),
+				Path.new("C:/bin/mock.cl.exe"),
 				[
 					"@C:/target/ObjectDir/SharedCompileArguments.rsp",
 					"./File.c",
-					"-o",
-					"C:/target/obj/File.o",
+					"/Fo\"C:/target/obj/File.obj\"",
 				],
 				[
 					Path.new("File.c"),
 					Path.new("C:/target/ObjectDir/SharedCompileArguments.rsp"),
 				],
 				[
-					Path.new("C:/target/obj/File.o"),
+					Path.new("C:/target/obj/File.obj"),
 				]),
 		]
 
@@ -101,9 +106,12 @@ class ClangCompilerUnitTests {
 
 	// [Fact]
 	Compile_Resource() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
 
 		var arguments = SharedCompileArguments.new()
 		arguments.Standard = LanguageStandard.C11
@@ -131,7 +139,7 @@ class ClangCompilerUnitTests {
 				Path.new("./writefile.exe"),
 				[
 					"./ObjectDir/SharedCompileArguments.rsp",
-					"-fpic -std=c11 -O0 -I\"./Includes\" -DDEBUG -mpclmul -maes -msse4.1 -msha -c",
+					"/nologo /FC /permissive- /Zc:__cplusplus /Zc:externConstexpr /Zc:inline /Zc:throwingNew /W4 /std:c11 /Od /I\"./Includes\" /DDEBUG /X /RTC1 /MT /bigobj /c",
 				],
 				[],
 				[
@@ -142,12 +150,12 @@ class ClangCompilerUnitTests {
 				Path.new("C:/source/"),
 				Path.new("C:/bin/mock.rc.exe"),
 				[
-					"-D_UNICODE",
-					"-DUNICODE",
-					"-l\"0x0409\"",
-					"-I\"./Includes\"",
-					"-o",
-					"C:/target/obj/Resources.res",
+					"/nologo",
+					"/D_UNICODE",
+					"/DUNICODE",
+					"/l\"0x0409\"",
+					"/I\"./Includes\"",
+					"/Fo\"C:/target/obj/Resources.res\"",
 					"./Resources.rc",
 				],
 				[
@@ -164,9 +172,12 @@ class ClangCompilerUnitTests {
 
 	// [Fact]
 	LinkStaticLibrary_Simple() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.StaticLibrary
@@ -174,7 +185,7 @@ class ClangCompilerUnitTests {
 		arguments.TargetFile = Path.new("Library.mock.a")
 		arguments.TargetRootDirectory = Path.new("C:/target/")
 		arguments.ObjectFiles = [
-			Path.new("File.mock.o"),
+			Path.new("File.mock.obj"),
 		]
 
 		var result = uut.CreateLinkOperation(arguments)
@@ -183,14 +194,16 @@ class ClangCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Library.mock.a",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.ar"),
+			Path.new("C:/bin/mock.lib.exe"),
 			[
-				"-r",
-				"./Library.mock.a",
-				"./File.mock.o",
+				"/nologo",
+				"/INCREMENTAL:NO",
+				"/machine:X64",
+				"/out:\"./Library.mock.a\"",
+				"./File.mock.obj",
 			],
 			[
-				Path.new("File.mock.o"),
+				Path.new("File.mock.obj"),
 			],
 			[
 				Path.new("C:/target/Library.mock.a"),
@@ -201,9 +214,12 @@ class ClangCompilerUnitTests {
 
 	// [Fact]
 	LinkExecutable_Simple() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.Executable
@@ -211,7 +227,7 @@ class ClangCompilerUnitTests {
 		arguments.TargetFile = Path.new("Something.exe")
 		arguments.TargetRootDirectory = Path.new("C:/target/")
 		arguments.ObjectFiles = [
-			Path.new("File.mock.o"),
+			Path.new("File.mock.obj"),
 		]
 		arguments.LibraryFiles = [
 			Path.new("Library.mock.a"),
@@ -223,16 +239,19 @@ class ClangCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.clang++"),
+			Path.new("C:/bin/mock.link.exe"),
 			[
-				"-o",
-				"./Something.exe",
-				"./File.mock.o",
+				"/nologo",
+				"/INCREMENTAL:NO",
+				"/subsystem:console",
+				"/machine:X64",
+				"/out:\"./Something.exe\"",
 				"./Library.mock.a",
+				"./File.mock.obj",
 			],
 			[
 				Path.new("Library.mock.a"),
-				Path.new("File.mock.o"),
+				Path.new("File.mock.obj"),
 			],
 			[
 				Path.new("C:/target/Something.exe"),
@@ -243,9 +262,12 @@ class ClangCompilerUnitTests {
 
 	// [Fact]
 	LinkWindowsApplication_Simple() {
-		var uut = ClangCompiler.new(
-			Path.new("C:/bin/mock.clang++"),
-			Path.new("C:/bin/mock.ar"))
+		var uut = MSVCCompiler.new(
+			Path.new("C:/bin/mock.cl.exe"),
+			Path.new("C:/bin/mock.link.exe"),
+			Path.new("C:/bin/mock.lib.exe"),
+			Path.new("C:/bin/mock.rc.exe"),
+			Path.new("C:/bin/mock.ml.exe"))
 
 		var arguments = LinkArguments.new()
 		arguments.TargetType = LinkTarget.WindowsApplication
@@ -253,7 +275,7 @@ class ClangCompilerUnitTests {
 		arguments.TargetFile = Path.new("Something.exe")
 		arguments.TargetRootDirectory = Path.new("C:/target/")
 		arguments.ObjectFiles = [
-			Path.new("File.mock.o"),
+			Path.new("File.mock.obj"),
 		]
 		arguments.LibraryFiles = [
 			Path.new("Library.mock.a"),
@@ -265,16 +287,19 @@ class ClangCompilerUnitTests {
 		var expected = BuildOperation.new(
 			"./Something.exe",
 			Path.new("C:/target/"),
-			Path.new("C:/bin/mock.clang++"),
+			Path.new("C:/bin/mock.link.exe"),
 			[
-				"-o",
-				"./Something.exe",
+				"/nologo",
+				"/INCREMENTAL:NO",
+				"/subsystem:windows",
+				"/machine:X64",
+				"/out:\"./Something.exe\"",
 				"./Library.mock.a",
-				"./File.mock.o",
+				"./File.mock.obj",
 			],
 			[
 				Path.new("Library.mock.a"),
-				Path.new("File.mock.o"),
+				Path.new("File.mock.obj"),
 			],
 			[
 				Path.new("C:/target/Something.exe"),

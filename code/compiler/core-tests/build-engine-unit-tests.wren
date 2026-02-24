@@ -8,7 +8,7 @@ import "Soup|Build.Utils:./build-operation" for BuildOperation
 import "../../test/assert" for Assert
 import "../core/build-engine" for BuildEngine
 import "../core/mock-compiler" for MockCompiler
-import "../core/build-arguments" for BuildArguments, BuildOptimizationLevel, BuildTargetType, SourceFile, HeaderFileSet
+import "../core/build-arguments" for BuildArguments, BuildOptimizationLevel, BuildTargetType, HeaderFileSet
 import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, ResourceCompileArguments, SharedCompileArguments, TranslationUnitCompileArguments
 import "../core/link-arguments" for LinkArguments, LinkTarget
 
@@ -17,17 +17,17 @@ class BuildEngineUnitTests {
 	}
 
 	RunTests() {
-		System.print("BuildEngineUnitTests.Initialize_Success")
+		System.print("BuildEngineUnitTests.Initialize_Success()")
 		this.Initialize_Success()
-		System.print("BuildEngineUnitTests.Build_WindowsApplication")
+		System.print("BuildEngineUnitTests.Build_WindowsApplication()")
 		this.Build_WindowsApplication()
-		System.print("BuildEngineUnitTests.Build_WindowsApplicationWithResource")
+		System.print("BuildEngineUnitTests.Build_WindowsApplicationWithResource()")
 		this.Build_WindowsApplicationWithResource()
-		System.print("BuildEngineUnitTests.Build_Executable")
+		System.print("BuildEngineUnitTests.Build_Executable()")
 		this.Build_Executable()
-		System.print("BuildEngineUnitTests.Build_Library_PublicHeaderFiles")
+		System.print("BuildEngineUnitTests.Build_Library_PublicHeaderFiles()")
 		this.Build_Library_PublicHeaderFiles()
-		System.print("BuildEngineUnitTests.Build_Library_MultipleFiles")
+		System.print("BuildEngineUnitTests.Build_Library_MultipleFiles()")
 		this.Build_Library_MultipleFiles()
 	}
 
@@ -102,7 +102,7 @@ class BuildEngineUnitTests {
 		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnitArguments,
 		]
 
@@ -258,7 +258,7 @@ class BuildEngineUnitTests {
 		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnitArguments,
 		]
 
@@ -419,7 +419,7 @@ class BuildEngineUnitTests {
 		expectedTranslationUnitArguments.SourceFile = Path.new("TestFile.c")
 		expectedTranslationUnitArguments.TargetFile = Path.new("obj/TestFile.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnitArguments,
 		]
 
@@ -592,7 +592,7 @@ class BuildEngineUnitTests {
 				"INFO: Generate Copy Header: ./TestFile1.h",
 				"INFO: Generate Copy Header: ./TestFile2.h",
 				"INFO: Copy Header Set: ./SubFolder/",
-				"INFO: Generate Copy Header: ./TestFile3.h"
+				"INFO: Generate Copy Header: ./TestFile3.h",
 			],
 			SoupTest.logs)
 
@@ -604,15 +604,15 @@ class BuildEngineUnitTests {
 		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
 		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedCompileArguments.IncludeDirectories = [
-				Path.new("Folder"),
-				Path.new("AnotherFolder/Sub"),
+			Path.new("Folder"),
+			Path.new("AnotherFolder/Sub"),
 		]
 
 		var expectedTranslationUnit1Arguments = TranslationUnitCompileArguments.new()
 		expectedTranslationUnit1Arguments.SourceFile = Path.new("TestFile1.c")
 		expectedTranslationUnit1Arguments.TargetFile = Path.new("obj/TestFile1.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnit1Arguments,
 		]
 
@@ -621,7 +621,7 @@ class BuildEngineUnitTests {
 		expectedLinkArguments.TargetFile = Path.new("bin/Library.mock.lib")
 		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedLinkArguments.ObjectFiles = [
-				Path.new("obj/TestFile1.mock.obj"),
+			Path.new("obj/TestFile1.mock.obj"),
 		]
 
 		// Note: There is no need to send along the static libraries for a static library linking
@@ -843,8 +843,8 @@ class BuildEngineUnitTests {
 		expectedCompileArguments.SourceRootDirectory = Path.new("C:/source/")
 		expectedCompileArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedCompileArguments.IncludeDirectories = [
-				Path.new("Folder"),
-				Path.new("AnotherFolder/Sub"),
+			Path.new("Folder"),
+			Path.new("AnotherFolder/Sub"),
 		]
 
 		var expectedTranslationUnit1Arguments = TranslationUnitCompileArguments.new()
@@ -859,7 +859,7 @@ class BuildEngineUnitTests {
 		expectedTranslationUnit3Arguments.SourceFile = Path.new("TestFile3.c")
 		expectedTranslationUnit3Arguments.TargetFile = Path.new("obj/TestFile3.mock.obj")
 
-		expectedCompileArguments.ImplementationUnits = [
+		expectedCompileArguments.TranslationUnits = [
 			expectedTranslationUnit1Arguments,
 			expectedTranslationUnit2Arguments,
 			expectedTranslationUnit3Arguments,
@@ -870,9 +870,9 @@ class BuildEngineUnitTests {
 		expectedLinkArguments.TargetFile = Path.new("bin/Library.mock.lib")
 		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedLinkArguments.ObjectFiles = [
-				Path.new("obj/TestFile1.mock.obj"),
-				Path.new("obj/TestFile2.mock.obj"),
-				Path.new("obj/TestFile3.mock.obj"),
+			Path.new("obj/TestFile1.mock.obj"),
+			Path.new("obj/TestFile2.mock.obj"),
+			Path.new("obj/TestFile3.mock.obj"),
 		]
 
 		// Note: There is no need to send along the static libraries for a static library linking
