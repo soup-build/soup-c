@@ -2,7 +2,7 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "Soup|Build.Utils:./Path" for Path
+import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
 import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
 import "../core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments
@@ -13,7 +13,7 @@ class MSVCResourceCompileArgumentBuilderUnitTests {
 	}
 
 	RunTests() {
-		System.print("MSVCResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple")
+		System.print("MSVCResourceCompileArgumentBuilderUnitTests.BuildResourceCompilerArguments_Simple()")
 		this.BuildResourceCompilerArguments_Simple()
 	}
 

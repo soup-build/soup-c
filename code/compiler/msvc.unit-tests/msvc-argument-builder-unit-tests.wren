@@ -1,11 +1,11 @@
-// <copyright file="MSVCArgumentBuilderUnitTests.wren" company="Soup">
+// <copyright file="msvc-argument-builder-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "../MSVC/MSVCArgumentBuilder" for MSVCArgumentBuilder
-import "Soup|Build.Utils:./Path" for Path
-import "../../Test/Assert" for Assert
-import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
+import "../msvc/msvc-argument-builder" for MSVCArgumentBuilder
+import "Soup|Build.Utils:./path" for Path
+import "../../test/assert" for Assert
+import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, SharedCompileArguments, TranslationUnitCompileArguments
 
 class MSVCArgumentBuilderUnitTests {
 	construct new() {

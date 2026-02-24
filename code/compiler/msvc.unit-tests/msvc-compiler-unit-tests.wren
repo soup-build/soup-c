@@ -1,30 +1,30 @@
-// <copyright file="MSVCCompilerUnitTests.wren" company="Soup">
+// <copyright file="msvc-compiler-unit-tests.wren" company="Soup">
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "../MSVC/MSVCCompiler" for MSVCCompiler
-import "Soup|Build.Utils:./Path" for Path
-import "../../Test/Assert" for Assert
-import "Soup|Build.Utils:./BuildOperation" for BuildOperation
-import "../Core/LinkArguments" for LinkArguments, LinkTarget
-import "../Core/CompileArguments" for LanguageStandard, OptimizationLevel,  SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
+import "../msvc/msvc-compiler" for MSVCCompiler
+import "Soup|Build.Utils:./path" for Path
+import "../../test/assert" for Assert
+import "Soup|Build.Utils:./build-operation" for BuildOperation
+import "../core/link-arguments" for LinkArguments, LinkTarget
+import "../core/compile-arguments" for LanguageStandard, OptimizationLevel,  SharedCompileArguments, ResourceCompileArguments, TranslationUnitCompileArguments
 
 class MSVCCompilerUnitTests {
 	construct new() {
 	}
 
 	RunTests() {
-		System.print("MSVCCompilerUnitTests.Initialize")
+		System.print("MSVCCompilerUnitTests.Initialize()")
 		this.Initialize()
-		System.print("MSVCCompilerUnitTests.Compile_Simple")
+		System.print("MSVCCompilerUnitTests.Compile_Simple()")
 		this.Compile_Simple()
-		System.print("MSVCCompilerUnitTests.Compile_Resource")
+		System.print("MSVCCompilerUnitTests.Compile_Resource()")
 		this.Compile_Resource()
-		System.print("MSVCCompilerUnitTests.LinkStaticLibrary_Simple")
+		System.print("MSVCCompilerUnitTests.LinkStaticLibrary_Simple()")
 		this.LinkStaticLibrary_Simple()
-		System.print("MSVCCompilerUnitTests.LinkExecutable_Simple")
+		System.print("MSVCCompilerUnitTests.LinkExecutable_Simple()")
 		this.LinkExecutable_Simple()
-		System.print("MSVCCompilerUnitTests.LinkWindowsApplication_Simple")
+		System.print("MSVCCompilerUnitTests.LinkWindowsApplication_Simple()")
 		this.LinkWindowsApplication_Simple()
 	}
 

@@ -8,7 +8,7 @@ import "Soup|Build.Utils:./build-operation" for BuildOperation
 import "../../test/assert" for Assert
 import "../core/build-engine" for BuildEngine
 import "../core/mock-compiler" for MockCompiler
-import "../core/build-arguments" for BuildArguments, BuildOptimizationLevel, BuildTargetType, SourceFile
+import "../core/build-arguments" for BuildArguments, BuildOptimizationLevel, BuildTargetType, SourceFile, HeaderFileSet
 import "../core/compile-arguments" for LanguageStandard, OptimizationLevel, ResourceCompileArguments, SharedCompileArguments, TranslationUnitCompileArguments
 import "../core/link-arguments" for LinkArguments, LinkTarget
 
@@ -47,7 +47,7 @@ class BuildEngineUnitTests {
 		var dependenciesTable = {}
 		globalState["Dependencies"] = dependenciesTable
 		dependenciesTable["Tool"] = {
-			"mkdir": {
+			"mwasplund|mkdir": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/mkdir.exe"
@@ -202,7 +202,7 @@ class BuildEngineUnitTests {
 		var dependenciesTable = {}
 		globalState["Dependencies"] = dependenciesTable
 		dependenciesTable["Tool"] = {
-			"mkdir": {
+			"mwasplund|mkdir": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/mkdir.exe"
@@ -365,7 +365,7 @@ class BuildEngineUnitTests {
 		var dependenciesTable = {}
 		globalState["Dependencies"] = dependenciesTable
 		dependenciesTable["Tool"] = {
-			"mkdir": {
+			"mwasplund|mkdir": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/mkdir.exe"
@@ -521,14 +521,14 @@ class BuildEngineUnitTests {
 		var dependenciesTable = {}
 		globalState["Dependencies"] = dependenciesTable
 		dependenciesTable["Tool"] = {
-			"copy": {
+			"mwasplund|copy": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/copy.exe"
 					}
 				}
 			},
-			"mkdir": {
+			"mwasplund|mkdir": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/mkdir.exe"
@@ -552,9 +552,20 @@ class BuildEngineUnitTests {
 		arguments.SourceFiles = [
 			Path.new("TestFile1.c"),
 		]
-		arguments.PublicHeaderFiles = [
-			Path.new("TestFile1.h"),
-			Path.new("TestFile2.h"),
+		arguments.PublicHeaderSets = [
+			HeaderFileSet.new(
+				Path.new("./"),
+				null,
+				[
+					Path.new("TestFile1.h"),
+					Path.new("TestFile2.h"),
+				]),
+			HeaderFileSet.new(
+				Path.new("SubFolder/"),
+				Path.new("TargetFolder/"),
+				[
+					Path.new("TestFile3.h"),
+				]),
 		]
 		arguments.OptimizationLevel = BuildOptimizationLevel.Size
 		arguments.IncludeDirectories = [
@@ -577,8 +588,11 @@ class BuildEngineUnitTests {
 				"INFO: Linking target",
 				"INFO: Generate Link Operation: ./bin/Library.mock.lib",
 				"INFO: Setup Public Headers",
+				"INFO: Copy Header Set: ./",
 				"INFO: Generate Copy Header: ./TestFile1.h",
 				"INFO: Generate Copy Header: ./TestFile2.h",
+				"INFO: Copy Header Set: ./SubFolder/",
+				"INFO: Generate Copy Header: ./TestFile3.h"
 			],
 			SoupTest.logs)
 
@@ -676,17 +690,6 @@ class BuildEngineUnitTests {
 					Path.new("OutputFile.out"),
 				]),
 			BuildOperation.new(
-				"MakeDir [./include/]",
-				Path.new("C:/target/"),
-				Path.new("/TARGET/mkdir.exe"),
-				[
-					"./include/",
-				],
-				[],
-				[
-					Path.new("./include/"),
-				]),
-			BuildOperation.new(
 				"Copy [C:/source/TestFile1.h] -> [./include/TestFile1.h]",
 				Path.new("C:/target/"),
 				Path.new("/TARGET/copy.exe"),
@@ -713,6 +716,42 @@ class BuildEngineUnitTests {
 				],
 				[
 					Path.new("include/TestFile2.h"),
+				]),
+			BuildOperation.new(
+				"Copy [C:/source/SubFolder/TestFile3.h] -> [./include/TargetFolder/TestFile3.h]",
+				Path.new("C:/target/"),
+				Path.new("/TARGET/copy.exe"),
+				[
+					"C:/source/SubFolder/TestFile3.h",
+					"./include/TargetFolder/TestFile3.h",
+				],
+				[
+					Path.new("C:/source/SubFolder/TestFile3.h"),
+				],
+				[
+					Path.new("include/TargetFolder/TestFile3.h"),
+				]),
+			BuildOperation.new(
+				"MakeDir [./include/]",
+				Path.new("C:/target/"),
+				Path.new("/TARGET/mkdir.exe"),
+				[
+					"./include/",
+				],
+				[],
+				[
+					Path.new("./include/"),
+				]),
+			BuildOperation.new(
+				"MakeDir [./include/TargetFolder/]",
+				Path.new("C:/target/"),
+				Path.new("/TARGET/mkdir.exe"),
+				[
+					"./include/TargetFolder/",
+				],
+				[],
+				[
+					Path.new("./include/TargetFolder/"),
 				]),
 		]
 
@@ -745,7 +784,7 @@ class BuildEngineUnitTests {
 		var dependenciesTable = {}
 		globalState["Dependencies"] = dependenciesTable
 		dependenciesTable["Tool"] = {
-			"mkdir": {
+			"mwasplund|mkdir": {
 				"SharedState": {
 					"Build": {
 						"RunExecutable": "/TARGET/mkdir.exe"

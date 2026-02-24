@@ -5,7 +5,7 @@
 import "Soup|Build.Utils:./path" for Path
 import "../../test/assert" for Assert
 import "../clang/clang-argument-builder" for ClangArgumentBuilder
-import "../Core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments
+import "../core/compile-arguments" for SharedCompileArguments, ResourceCompileArguments
 
 
 class ClangResourceCompileArgumentBuilderUnitTests {

@@ -50,6 +50,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
+			"-fpic",
 			expectedFlag,
 			"-O0",
 			"-mpclmul",
@@ -72,6 +73,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
+			"-fpic",
 			"-std=c17",
 			"-O0",
 			"-mpclmul",
@@ -98,6 +100,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
+			"-fpic",
 			"-std=c17",
 			expectedFlag,
 			"-mpclmul",
@@ -122,6 +125,7 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-Werror",
+			"-fpic",
 			"-std=c17",
 			"-O0",
 			"-mpclmul",
@@ -146,6 +150,7 @@ class ClangArgumentBuilderUnitTests {
 
 		var expectedArguments = [
 			"-g",
+			"-fpic",
 			"-std=c17",
 			"-O0",
 			"-mpclmul",
@@ -172,6 +177,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
+			"-fpic",
 			"-std=c11",
 			"-O0",
 			"-I\"C:/Files/SDK/\"",
@@ -200,6 +206,7 @@ class ClangArgumentBuilderUnitTests {
 			arguments)
 
 		var expectedArguments = [
+			"-fpic",
 			"-std=c11",
 			"-O0",
 			"-DDEBUG",
