@@ -3,15 +3,15 @@
 // </copyright>
 
 import "soup" for Soup, SoupTask
-import "Soup|Build.Utils:./path" for Path
-import "Soup|Build.Utils:./set" for Set
-import "Soup|Build.Utils:./list-extensions" for ListExtensions
-import "Soup|Build.Utils:./map-extensions" for MapExtensions
-import "Soup|C.Compiler:./build-arguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
-import "Soup|C.Compiler:./build-engine" for BuildEngine
-import "Soup|C.Compiler.Clang:./clang-compiler" for ClangCompiler
-import "Soup|C.Compiler.GCC:./gcc-compiler" for GCCCompiler
-import "Soup|C.Compiler.MSVC:./msvc-compiler" for MSVCCompiler
+import "soup|build-utils:./path" for Path
+import "soup|build-utils:./set" for Set
+import "soup|build-utils:./list-extensions" for ListExtensions
+import "soup|build-utils:./map-extensions" for MapExtensions
+import "soup|c-compiler:./build-arguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
+import "soup|c-compiler:./build-engine" for BuildEngine
+import "soup|c-compiler-clang:./clang-compiler" for ClangCompiler
+import "soup|c-compiler-gcc:./gcc-compiler" for GCCCompiler
+import "soup|c-compiler-msvc:./msvc-compiler" for MSVCCompiler
 
 class BuildTask is SoupTask {
 	/// <summary>

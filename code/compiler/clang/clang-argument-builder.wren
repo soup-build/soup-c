@@ -2,8 +2,8 @@
 // Copyright (c) Soup. All rights reserved.
 // </copyright>
 
-import "Soup|C.Compiler:./compile-arguments" for LanguageStandard, OptimizationLevel
-import "Soup|C.Compiler:./link-arguments" for LinkTarget
+import "soup|c-compiler:./compile-arguments" for LanguageStandard, OptimizationLevel
+import "soup|c-compiler:./link-arguments" for LinkTarget
 
 /// <summary>
 /// A helper class that builds the correct set of compiler arguments for a given
