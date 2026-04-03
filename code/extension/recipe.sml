@@ -1,13 +1,13 @@
-Name: 'C'
+Name: 'c'
 Language: 'Wren|0'
 Version: 0.6.1
 Dependencies: {
 	Runtime: [
-		'Soup|C.Compiler@0'
-		'Soup|C.Compiler.Clang@0'
-		'Soup|C.Compiler.GCC@0'
-		'Soup|C.Compiler.MSVC@0'
-		'Soup|Build.Utils@0'
+		'soup|c-compiler@0'
+		'soup|c-compiler-clang@0'
+		'soup|c-compiler-gcc@0'
+		'soup|c-compiler-msvc@0'
+		'soup|build-utils@0'
 	]
 	Tool: [
 		'[C++]mwasplund|copy@1'
