@@ -5,5 +5,5 @@ set -e
 
 ROOT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-soup build ../soup/code/generate-test/
-soup run ../soup/code/generate-test/ -args $ROOT_DIR/code/run-tests.wren $ROOT_DIR/out/Wren/Local/C/0.5.1/J_HqSstV55vlb-x6RWC_hLRFRDU/script/bundles.sml
+soup build code/extension/
+soup run ../soup/code/generate-test/ -args $ROOT_DIR/code/run-tests.wren $ROOT_DIR/out/wren/local/c/0.7.0/J_HqSstV55vlb-x6RWC_hLRFRDU/script/bundles.sml
