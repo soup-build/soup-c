@@ -58,6 +58,10 @@ class BuildEngine {
 		// Ensure there are actually files to build
 		if (arguments.SourceFiles.count != 0 ||
 			arguments.AssemblySourceFiles.count != 0) {
+
+			// Track output folders
+			var objectFolderSet = Set.new()
+
 			// Setup the shared properties
 			var compileArguments = SharedCompileArguments.new()
 			compileArguments.Standard = arguments.LanguageStandard
@@ -77,9 +81,11 @@ class BuildEngine {
 			if (arguments.ResourceFile) {
 				Soup.info("Generate Resource File Compile: %(arguments.ResourceFile)")
 
+				objectFolderSet.add(arguments.ResourceFile.GetParent())
+
 				var compiledResourceFile =
 					arguments.ObjectDirectory +
-					Path.new(arguments.ResourceFile.GetFileName())
+					arguments.ResourceFile
 				compiledResourceFile.SetFileExtension(_compiler.ResourceFileExtension)
 
 				var compileResourceFileArguments = ResourceCompileArguments.new()
@@ -93,15 +99,29 @@ class BuildEngine {
 			// Compile the individual translation units
 			var compileTranslationUnits = []
 			for (source in arguments.SourceFiles) {
+				objectFolderSet.add(source.GetParent())
+
 				// Compile as a standard TU
 				Soup.info("Generate Compile Operation: %(source)")
 
 				var compileFileArguments = TranslationUnitCompileArguments.new()
 				compileFileArguments.SourceFile = source
-				compileFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
+				compileFileArguments.TargetFile = arguments.ObjectDirectory + source
 				compileFileArguments.TargetFile.SetFileExtension(_compiler.ObjectFileExtension)
 
 				compileTranslationUnits.add(compileFileArguments)
+			}
+
+			// Ensure the output directories exists
+			for (folder in objectFolderSet.list) {
+				if (!(folder.IsEmpty)) {
+					var objectFolder = arguments.ObjectDirectory + folder
+					Soup.info("Ensure Object Folder: %(objectFolder)")
+					result.BuildOperations.add(
+						SharedOperations.CreateCreateDirectoryOperation(
+							arguments.TargetRootDirectory,
+							objectFolder))
+				}
 			}
 
 			compileArguments.TranslationUnits = compileTranslationUnits
@@ -113,7 +133,7 @@ class BuildEngine {
 
 				var compileFileArguments = TranslationUnitCompileArguments.new()
 				compileFileArguments.SourceFile = file
-				compileFileArguments.TargetFile = arguments.ObjectDirectory + Path.new(file.GetFileName())
+				compileFileArguments.TargetFile = arguments.ObjectDirectory + file
 				compileFileArguments.TargetFile.SetFileExtension(_compiler.ObjectFileExtension)
 
 				compileAssemblyUnits.add(compileFileArguments)
@@ -172,7 +192,7 @@ class BuildEngine {
 		if (!(arguments.ResourceFile is Null)) {
 			var compiledResourceFile =
 				arguments.ObjectDirectory +
-				Path.new(arguments.ResourceFile.GetFileName())
+				arguments.ResourceFile
 			compiledResourceFile.SetFileExtension(_compiler.ResourceFileExtension)
 
 			objectFiles.add(compiledResourceFile)
@@ -180,14 +200,14 @@ class BuildEngine {
 
 		// Add the implementation unit object files
 		for (source in arguments.SourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
+			var objectFile = arguments.ObjectDirectory + source
 			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
 			objectFiles.add(objectFile)
 		}
 
 		// Add the assembly unit object files
 		for (source in arguments.AssemblySourceFiles) {
-			var objectFile = arguments.ObjectDirectory + Path.new(source.GetFileName())
+			var objectFile = arguments.ObjectDirectory + source
 			objectFile.SetFileExtension(_compiler.ObjectFileExtension)
 			objectFiles.add(objectFile)
 		}
