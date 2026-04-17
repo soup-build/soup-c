@@ -44,36 +44,58 @@ class ExpandSourceTask is SoupTask {
 			allowedPaths.add(Path.new("./**/*.c"))
 		}
 
+		var excludePaths = []
+		if (buildTable.containsKey("KnownSourceExclude")) {
+			// Fill in the info on existing excluded files
+			excludePaths = ListExtensions.ConvertToPathList(buildTable["KnownSourceExclude"])
+		}
+
 		// Expand the source from all discovered files
 		Soup.info("Expand Source")
 		var filesystem = globalState["FileSystem"]
-		var sourceFiles = ExpandSourceTask.DiscoverCompileFiles(filesystem, Path.new(), allowedPaths)
+		var sourceFiles = ExpandSourceTask.DiscoverCompileFiles(
+			filesystem, Path.new(), allowedPaths, excludePaths)
 
 		ListExtensions.Append(
 			MapExtensions.EnsureList(buildTable, "Source"),
 			sourceFiles)
 	}
 
-	static DiscoverCompileFiles(currentDirectory, workingDirectory, allowedPaths) {
+	static DiscoverCompileFiles(
+		currentDirectory, workingDirectory, allowedPaths, excludePaths) {
 		var files = []
 		for (directoryEntity in currentDirectory) {
 			if (directoryEntity is String) {
 				var file = workingDirectory + Path.new(directoryEntity)
 				Soup.info("Check File: %(file)")
-				if (ExpandSourceTask.IsMatchAny(allowedPaths, file)) {
+				if (ExpandSourceTask.ShouldInclude(allowedPaths, excludePaths, file)) {
 					files.add(ExpandSourceTask.CreateSourceInfo(file))
 				}
 			} else {
 				for (child in directoryEntity) {
 					var directory = workingDirectory + Path.new(child.key)
 					Soup.info("Found Directory: %(directory)")
-					var subFiles = ExpandSourceTask.DiscoverCompileFiles(child.value, directory, allowedPaths)
+					var subFiles = ExpandSourceTask.DiscoverCompileFiles(
+						child.value, directory, allowedPaths, excludePaths)
 					ListExtensions.Append(files, subFiles)
 				}
 			}
 		}
 
 		return files
+	}
+
+	static ShouldInclude(allowedPaths, excludePaths, file) {
+		if (ExpandSourceTask.IsMatchAny(allowedPaths, file)) {
+			// If we matched included, check if there is an explicit exclude
+			if (ExpandSourceTask.IsMatchAny(excludePaths, file)) {
+				return false
+			} else {
+				return true
+			}
+		} else {
+			return false
+		}
 	}
 
 	static IsMatchAny(allowedPaths, file) {
