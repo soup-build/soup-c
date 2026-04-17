@@ -168,6 +168,23 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			expectedBuildOperations,
 			SoupTest.operations)
+
+		var expectedSharedState = {
+			"Language": "C",
+			"Version": "1.0",
+			"Build": {
+				"RunArguments": [],
+				"LinkDependencies": [],
+				"RuntimeDependencies": [
+					"C:/target/bin/Program.exe",
+				],
+				"RunExecutable": "C:/target/bin/Program.exe",
+				"TargetFile": "C:/target/bin/Program.exe",
+			}
+		}
+		Assert.MapEqual(
+			expectedSharedState,
+			SoupTest.sharedState)
 	}
 
 	Build_Executable() {
@@ -314,6 +331,23 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			expectedBuildOperations,
 			SoupTest.operations)
+
+		var expectedSharedState = {
+			"Language": "C",
+			"Version": "1.0",
+			"Build": {
+				"RunArguments": [],
+				"LinkDependencies": [],
+				"RuntimeDependencies": [
+					"C:/target/bin/Program.exe",
+				],
+				"RunExecutable": "C:/target/bin/Program.exe",
+				"TargetFile": "C:/target/bin/Program.exe",
+			}
+		}
+		Assert.MapEqual(
+			expectedSharedState,
+			SoupTest.sharedState)
 	}
 
 	Build_Library_MultipleFiles() {
@@ -507,5 +541,19 @@ class BuildTaskUnitTests {
 		Assert.ListEqual(
 			expectedBuildOperations,
 			SoupTest.operations)
+
+		var expectedSharedState = {
+			"Language": "C",
+			"Version": "1.0",
+			"Build": {
+				"LinkDependencies": [
+					"C:/target/bin/Library.mock.lib",
+				],
+				"RuntimeDependencies": [],
+			}
+		}
+		Assert.MapEqual(
+			expectedSharedState,
+			SoupTest.sharedState)
 	}
 }

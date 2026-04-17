@@ -2,11 +2,11 @@ Version: 6
 Closure: {
 	Wren: {
 		c: { Version: './', Build: '0', Tool: '0' }
-		'soup|build-utils': { Version: 0.9.2, Digest: 'sha256:5350668c3d273aeeb1718ac1520ad24c24b0c8640785286bbca788e7efa7da3c', Build: '0', Tool: '0' }
-		'soup|c-compiler': { Version: 0.6.0, Digest: 'sha256:d0bef3417af1ac2f5047c852ca11243a5aec14a0b8ac5ae4dee51376e4524cc7', Build: '0', Tool: '0' }
-		'soup|c-compiler-clang': { Version: 0.6.1, Digest: 'sha256:7bf7ffc9ea0b2f6aaa52f3c4c64597a9db997c8116561b3e3536a1a424806b8a', Build: '0', Tool: '0' }
-		'soup|c-compiler-gcc': { Version: 0.6.0, Digest: 'sha256:5db977d03f02246f5567a295eab224f39f1dab1f6439ae4de12289b249fd5696', Build: '0', Tool: '0' }
-		'soup|c-compiler-msvc': { Version: 0.6.0, Digest: 'sha256:5ce984949f03860e5c6381a4fdc9a1da18c0cac54fe1424ced456db81e7492c8', Build: '0', Tool: '0' }
+		'soup|build-utils': { Version: 0.9.3, Digest: 'sha256:640456fb5c985c2ff460c9b00197811c273d6f093f1fb6695baa3a7bea78d521', Build: '0', Tool: '0' }
+		'soup|c-compiler': { Version: '../compiler/core/', Build: '0', Tool: '0' }
+		'soup|c-compiler-clang': { Version: '../compiler/clang/', Build: '0', Tool: '0' }
+		'soup|c-compiler-gcc': { Version: '../compiler/gcc/', Build: '0', Tool: '0' }
+		'soup|c-compiler-msvc': { Version: '../compiler/msvc/', Build: '0', Tool: '0' }
 		'soup|c': { Version: './', Build: '0', Tool: '0' }
 	}
 }
