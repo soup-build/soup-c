@@ -34,6 +34,7 @@ class BuildTaskUnitTests {
 		var buildTable = {}
 		activeState["Build"] = buildTable
 		buildTable["Architecture"] = "x64"
+		buildTable["System"] = "Win32"
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Program"
 		buildTable["TargetType"] = BuildTargetType.WindowsApplication
@@ -197,6 +198,7 @@ class BuildTaskUnitTests {
 		var buildTable = {}
 		activeState["Build"] = buildTable
 		buildTable["Architecture"] = "x64"
+		buildTable["System"] = "Unix"
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Program"
 		buildTable["TargetType"] = BuildTargetType.Executable
@@ -235,7 +237,7 @@ class BuildTaskUnitTests {
 				"INFO: Generate Compile Operation: ./TestFile.c",
 				"INFO: CoreLink",
 				"INFO: Linking target",
-				"INFO: Generate Link Operation: ./bin/Program.exe",
+				"INFO: Generate Link Operation: ./bin/Program",
 				"INFO: Build Generate Done",
 			],
 			SoupTest.logs)
@@ -258,7 +260,7 @@ class BuildTaskUnitTests {
 		var expectedLinkArguments = LinkArguments.new()
 		expectedLinkArguments.TargetType = LinkTarget.Executable
 		expectedLinkArguments.TargetArchitecture = "x64"
-		expectedLinkArguments.TargetFile = Path.new("bin/Program.exe")
+		expectedLinkArguments.TargetFile = Path.new("bin/Program")
 		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedLinkArguments.ObjectFiles = [
 			Path.new("obj/TestFile.mock.obj"),
@@ -339,10 +341,10 @@ class BuildTaskUnitTests {
 				"RunArguments": [],
 				"LinkDependencies": [],
 				"RuntimeDependencies": [
-					"C:/target/bin/Program.exe",
+					"C:/target/bin/Program",
 				],
-				"RunExecutable": "C:/target/bin/Program.exe",
-				"TargetFile": "C:/target/bin/Program.exe",
+				"RunExecutable": "C:/target/bin/Program",
+				"TargetFile": "C:/target/bin/Program",
 			}
 		}
 		Assert.MapEqual(
@@ -360,6 +362,7 @@ class BuildTaskUnitTests {
 		var buildTable = {}
 		activeState["Build"] = buildTable
 		buildTable["Architecture"] = "x64"
+		buildTable["System"] = "Win32"
 		buildTable["Compiler"] = "MOCK"
 		buildTable["TargetName"] = "Library"
 		buildTable["TargetType"] = BuildTargetType.StaticLibrary

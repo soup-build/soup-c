@@ -62,6 +62,7 @@ class BuildEngineUnitTests {
 		// Setup the build arguments
 		var arguments = BuildArguments.new()
 		arguments.TargetName = "Program"
+		arguments.TargetSystem = "Win32"
 		arguments.TargetType = BuildTargetType.WindowsApplication
 		arguments.LanguageStandard = LanguageStandard.C17
 		arguments.SourceRootDirectory = Path.new("C:/source/")
@@ -217,6 +218,7 @@ class BuildEngineUnitTests {
 		// Setup the build arguments
 		var arguments = BuildArguments.new()
 		arguments.TargetName = "Program"
+		arguments.TargetSystem = "Win32"
 		arguments.TargetType = BuildTargetType.WindowsApplication
 		arguments.LanguageStandard = LanguageStandard.C17
 		arguments.SourceRootDirectory = Path.new("C:/source/")
@@ -380,6 +382,7 @@ class BuildEngineUnitTests {
 		// Setup the build arguments
 		var arguments = BuildArguments.new()
 		arguments.TargetName = "Program"
+		arguments.TargetSystem = "Unix"
 		arguments.TargetType = BuildTargetType.Executable
 		arguments.LanguageStandard = LanguageStandard.C17
 		arguments.SourceRootDirectory = Path.new("C:/source/")
@@ -404,7 +407,7 @@ class BuildEngineUnitTests {
 				"INFO: Generate Compile Operation: ./TestFile.c",
 				"INFO: CoreLink",
 				"INFO: Linking target",
-				"INFO: Generate Link Operation: ./bin/Program.exe",
+				"INFO: Generate Link Operation: ./bin/Program",
 			],
 			SoupTest.logs)
 
@@ -425,7 +428,7 @@ class BuildEngineUnitTests {
 
 		var expectedLinkArguments = LinkArguments.new()
 		expectedLinkArguments.TargetType = LinkTarget.Executable
-		expectedLinkArguments.TargetFile = Path.new("bin/Program.exe")
+		expectedLinkArguments.TargetFile = Path.new("bin/Program")
 		expectedLinkArguments.TargetRootDirectory = Path.new("C:/target/")
 		expectedLinkArguments.ObjectFiles = [
 				Path.new("obj/TestFile.mock.obj"),
@@ -508,7 +511,7 @@ class BuildEngineUnitTests {
 
 		Assert.ListEqual(
 			[
-				Path.new("C:/target/bin/Program.exe"),
+				Path.new("C:/target/bin/Program"),
 			],
 			result.RuntimeDependencies)
 	}
@@ -543,6 +546,7 @@ class BuildEngineUnitTests {
 		// Setup the build arguments
 		var arguments = BuildArguments.new()
 		arguments.TargetName = "Library"
+		arguments.TargetSystem = "Win32"
 		arguments.TargetType = BuildTargetType.StaticLibrary
 		arguments.LanguageStandard = LanguageStandard.C17
 		arguments.SourceRootDirectory = Path.new("C:/source/")
@@ -799,6 +803,7 @@ class BuildEngineUnitTests {
 		// Setup the build arguments
 		var arguments = BuildArguments.new()
 		arguments.TargetName = "Library"
+		arguments.TargetSystem = "Win32"
 		arguments.TargetType = BuildTargetType.StaticLibrary
 		arguments.LanguageStandard = LanguageStandard.C17
 		arguments.SourceRootDirectory = Path.new("C:/source/")

@@ -47,11 +47,11 @@ class BuildTask is SoupTask {
 		sharedState["Version"] = SemanticVersion.new(1, 0).toString
 
 		var buildTable = activeState["Build"]
+		var system = buildTable["System"]
 
 		// Check if this build should skip this system
 		if (buildTable.containsKey("TargetSystems")) {
 			var targetSystems = buildTable["TargetSystems"]
-			var system = buildTable["System"]
 
 			if (!targetSystems.contains(system)) {
 				Soup.info("Target System is not supported: %(system)")
@@ -61,6 +61,7 @@ class BuildTask is SoupTask {
 
 		var arguments = BuildArguments.new()
 		arguments.TargetArchitecture = buildTable["Architecture"]
+		arguments.TargetSystem = system
 		arguments.TargetName = buildTable["TargetName"]
 		arguments.TargetType = buildTable["TargetType"]
 		arguments.LanguageStandard = buildTable["LanguageStandard"]
