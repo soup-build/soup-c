@@ -7,6 +7,7 @@ import "soup|build-utils:./path" for Path
 import "soup|build-utils:./set" for Set
 import "soup|build-utils:./list-extensions" for ListExtensions
 import "soup|build-utils:./map-extensions" for MapExtensions
+import "soup|build-utils:./semantic-version" for SemanticVersion
 import "soup|c-compiler:./build-arguments" for BuildArguments, BuildOptimizationLevel, HeaderFileSet
 import "soup|c-compiler:./build-engine" for BuildEngine
 import "soup|c-compiler-clang:./clang-compiler" for ClangCompiler
@@ -41,12 +42,16 @@ class BuildTask is SoupTask {
 		var activeState = Soup.activeState
 		var sharedState = Soup.sharedState
 
+		// Set the language and version so consumers can process this shared state
+		sharedState["Language"] = "C"
+		sharedState["Version"] = SemanticVersion.new(1, 0).toString
+
 		var buildTable = activeState["Build"]
+		var system = buildTable["System"]
 
 		// Check if this build should skip this system
 		if (buildTable.containsKey("TargetSystems")) {
 			var targetSystems = buildTable["TargetSystems"]
-			var system = buildTable["System"]
 
 			if (!targetSystems.contains(system)) {
 				Soup.info("Target System is not supported: %(system)")
@@ -56,6 +61,7 @@ class BuildTask is SoupTask {
 
 		var arguments = BuildArguments.new()
 		arguments.TargetArchitecture = buildTable["Architecture"]
+		arguments.TargetSystem = system
 		arguments.TargetName = buildTable["TargetName"]
 		arguments.TargetType = buildTable["TargetType"]
 		arguments.LanguageStandard = buildTable["LanguageStandard"]

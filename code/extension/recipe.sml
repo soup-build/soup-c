@@ -1,6 +1,6 @@
 Name: 'c'
 Language: 'Wren|0'
-Version: 0.8.0
+Version: 0.9.2
 Dependencies: {
 	Runtime: [
 		'soup|c-compiler@0'

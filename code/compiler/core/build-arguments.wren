@@ -80,6 +80,7 @@ class BuildArguments {
 	construct new() {
 		_targetName = null
 		_targetArchitecture = null
+		_targetSystem = null
 		_targetType = null
 		_languageStandard = null
 		_sourceRootDirectory = null
@@ -116,6 +117,12 @@ class BuildArguments {
 	/// </summary>
 	TargetArchitecture { _targetArchitecture }
 	TargetArchitecture=(value) { _targetArchitecture = value }
+
+	/// <summary>
+	/// Gets or sets the target system
+	/// </summary>
+	TargetSystem { _targetSystem }
+	TargetSystem=(value) { _targetSystem = value }
 
 	/// <summary>
 	/// Gets or sets the target type
