@@ -161,6 +161,14 @@ class RecipeBuildTask is SoupTask {
 			}
 		}
 
+		var knownExcludeFiles = null
+		if (recipe.containsKey("Exclude")) {
+			knownExcludeFiles = []
+			for (file in recipe["Exclude"]) {
+				knownExcludeFiles.add(file)
+			}
+		}
+
 		// Load the assembly source files if present
 		var assemblySourceFiles = []
 		if (recipe.containsKey("AssemblySource")) {
@@ -168,9 +176,9 @@ class RecipeBuildTask is SoupTask {
 		}
 
 		// Load the public header files if present
-		var publicHeaderSets = []
+		var knownPublicHeaderSets = []
 		if (recipe.containsKey("PublicHeaders")) {
-			publicHeaderSets = recipe["PublicHeaders"]
+			knownPublicHeaderSets = recipe["PublicHeaders"]
 		}
 
 		// Check for warning settings
@@ -230,12 +238,17 @@ class RecipeBuildTask is SoupTask {
 				MapExtensions.EnsureList(build, "KnownSource"),
 				knownSourceFiles)
 		}
+		if (knownExcludeFiles != null) {
+			ListExtensions.Append(
+				MapExtensions.EnsureList(build, "KnownSourceExclude"),
+				knownExcludeFiles)
+		}
 		ListExtensions.Append(
 			MapExtensions.EnsureList(build, "AssemblySource"),
 			assemblySourceFiles)
 		ListExtensions.Append(
-			MapExtensions.EnsureList(build, "PublicHeaderSets"),
-			publicHeaderSets)
+			MapExtensions.EnsureList(build, "KnownPublicHeaderSets"),
+			knownPublicHeaderSets)
 
 		build["EnableWarningsAsErrors"] = enableWarningsAsErrors
 
